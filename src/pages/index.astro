@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+
+const formatDate = (d: Date) =>
+  `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+---
+
+<Base
+  title="よるじかん｜電源オフの暮らしと快眠道具"
+  description="寝る前のセルフケアや快眠グッズを、選び方と比較とあわせて紹介する個人ブログ「よるじかん」の記事一覧です。"
+>
+  <h1>記事一覧</h1>
+  <p>寝る前の時間を整えるセルフケアグッズ・快眠道具を、選び方と比較とあわせて紹介しています。</p>
+  <ul class="post-list">
+    {posts.map((post) => (
+      <li class="post-card">
+        <a href={`/blog/${post.id}/`} class="post-title">{post.data.title}</a>
+        <div class="post-meta">
+          <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+          {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+        </div>
+        <p class="post-desc">{post.data.description}</p>
+      </li>
+    ))}
+  </ul>
+  <style>
+    .post-list { list-style: none; padding: 0; display: grid; gap: 20px; }
+    .post-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .post-title { font-size: 1.1rem; font-weight: 700; text-decoration: none; }
+    .post-meta { display: flex; gap: 10px; align-items: center; color: var(--muted); font-size: 0.82rem; margin-top: 6px; flex-wrap: wrap; }
+    .tag { background: #eef0fa; color: var(--accent); border-radius: 999px; padding: 1px 10px; }
+    .post-desc { margin: 8px 0 0; color: var(--muted); font-size: 0.92rem; }
+  </style>
+</Base>

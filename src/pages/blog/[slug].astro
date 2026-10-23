@@ -1,0 +1,42 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const formatDate = (d: Date) =>
+  `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+---
+
+<Base title={post.data.title} description={post.data.description}>
+  <article>
+    <h1>{post.data.title}</h1>
+    <div class="post-meta">
+      <time datetime={post.data.pubDate.toISOString()}>
+        公開: {formatDate(post.data.pubDate)}
+      </time>
+      {post.data.updatedDate && (
+        <time datetime={post.data.updatedDate.toISOString()}>
+          更新: {formatDate(post.data.updatedDate)}
+        </time>
+      )}
+      {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+    </div>
+    <Content />
+  </article>
+  <p class="back"><a href="/">← 記事一覧へ戻る</a></p>
+  <style>
+    .post-meta { display: flex; gap: 10px; align-items: center; color: var(--muted); font-size: 0.85rem; margin: 10px 0 24px; flex-wrap: wrap; }
+    .tag { background: #eef0fa; color: var(--accent); border-radius: 999px; padding: 1px 10px; }
+    .back { margin-top: 40px; }
+    article h1 { font-size: 1.6rem; line-height: 1.5; }
+  </style>
+</Base>
