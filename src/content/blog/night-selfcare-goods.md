@@ -93,6 +93,12 @@ faq:
 - 価格目安：レギュラーボックス（8本入・専用マット付）約770〜880円（税込）
 - [hibi 10MINUTES AROMAをAmazonで見る](https://www.amazon.co.jp/dp/B01M1LFHXU?tag=kobebooka1-22)
 
+<a class="blogcard" href="/blog/aroma-diffuser/">
+<img src="/images/aroma-diffuser.jpg" alt="">
+<span>あわせて読みたい</span>
+<p>アロマディフューザーおすすめ5選｜寝室の香りでリラックスして寝つきやすく</p>
+</a>
+
 ## よくある質問
 
 ### Q. 全部そろえると高いのでは？
