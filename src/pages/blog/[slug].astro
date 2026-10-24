@@ -11,9 +11,58 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 const formatDate = (d: Date) =>
   `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+
+// 目次: h2 の見出しから生成
+const tocHeadings = headings.filter((h) => h.depth === 2);
+
+// 構造化データ
+const pageURL = new URL(Astro.url.pathname, Astro.site).toString();
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+  ...(post.data.heroImage
+    ? { image: new URL(post.data.heroImage, Astro.site).toString() }
+    : {}),
+  author: { '@type': 'Organization', name: 'よるじかん' },
+  publisher: { '@type': 'Organization', name: 'よるじかん' },
+  mainEntityOfPage: pageURL,
+};
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'ホーム',
+      item: new URL('/', Astro.site).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: post.data.title,
+      item: pageURL,
+    },
+  ],
+};
+const faqJsonLd = post.data.faq
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: post.data.faq.map(({ q, a }) => ({
+        '@type': 'Question',
+        name: q,
+        acceptedAnswer: { '@type': 'Answer', text: a },
+      })),
+    }
+  : null;
 
 // 関連記事: タグが重なる記事を優先し、次に新しい順で最大3件
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
@@ -34,8 +83,27 @@ const related = allPosts
 ---
 
 <Base title={post.data.title} description={post.data.description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />
+    {faqJsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+    )}
+  </Fragment>
+
+  <nav class="breadcrumb" aria-label="パンくずリスト">
+    <ol>
+      <li><a href="/">ホーム</a></li>
+      <li aria-current="page">{post.data.title}</li>
+    </ol>
+  </nav>
+
   <article>
     <h1>{post.data.title}</h1>
+    <aside class="pr-note">
+      この記事にはアフィリエイトリンクが含まれます。リンク先で商品を購入いただくと、
+      サイト運営の支えになります（価格が変わることはありません）。
+    </aside>
     <div class="post-meta">
       <time datetime={post.data.pubDate.toISOString()}>
         公開: {formatDate(post.data.pubDate)}
@@ -50,8 +118,27 @@ const related = allPosts
     {post.data.heroImage && (
       <img class="hero-image" src={post.data.heroImage} alt={post.data.title} />
     )}
+    {tocHeadings.length > 0 && (
+      <nav class="toc" aria-label="目次">
+        <p class="toc-title">もくじ</p>
+        <ol class="toc-list">
+          {tocHeadings.map((h) => (
+            <li><a href={`#${h.slug}`}>{h.text}</a></li>
+          ))}
+        </ol>
+      </nav>
+    )}
     <Content />
   </article>
+
+  <section class="author-box">
+    <p class="author-name">よるじかん編集部</p>
+    <p class="author-text">
+      夜のセルフケアと快眠道具を調べるのが好きな個人運営ブログです。
+      実際に使ったもの・調べたものを、よい点も気になる点も含めて正直にまとめています。
+    </p>
+    <p class="author-link"><a href="/about/">このブログについて →</a></p>
+  </section>
 
   {related.length > 0 && (
     <section class="related">
@@ -80,7 +167,30 @@ const related = allPosts
 
   <p class="back"><a href="/">← 記事一覧へ戻る</a></p>
   <style>
-    .post-meta { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 0.85rem; margin: 12px 0 26px; flex-wrap: wrap; }
+    /* ---------- パンくず ---------- */
+    .breadcrumb { margin: 0 0 20px; }
+    .breadcrumb ol {
+      list-style: none; display: flex; flex-wrap: wrap; gap: 6px;
+      margin: 0; padding: 0; font-size: 0.82rem; color: var(--muted);
+    }
+    .breadcrumb li { display: inline-flex; align-items: center; gap: 6px; }
+    .breadcrumb li + li::before { content: "＞"; color: var(--accent); font-size: 0.72rem; }
+    .breadcrumb a { color: var(--muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--accent); }
+
+    /* ---------- PR表記 ---------- */
+    .pr-note {
+      margin: 14px 0 0;
+      padding: 10px 14px;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+    }
+
+    .post-meta { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 0.85rem; margin: 14px 0 26px; flex-wrap: wrap; }
     .hero-image {
       width: 100%; height: auto; display: block;
       border-radius: var(--radius);
@@ -88,6 +198,45 @@ const related = allPosts
     }
     .back { margin-top: 44px; }
     article h1 { font-size: 1.62rem; line-height: 1.55; margin: 0; }
+
+    /* ---------- 目次 ---------- */
+    .toc {
+      margin: 0 0 34px;
+      padding: 18px 22px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+    }
+    .toc-title {
+      font-family: "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Yu Mincho", "YuMincho", serif;
+      font-size: 1.02rem; font-weight: 600; margin: 0 0 8px; color: var(--accent);
+      letter-spacing: 0.06em;
+    }
+    .toc-list { margin: 0; padding-left: 1.35em; }
+    .toc-list li { margin: 0.3em 0; }
+    .toc-list li::marker { color: var(--accent); }
+    .toc-list a { color: var(--text); text-decoration: none; }
+    .toc-list a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ---------- 著者プロフィール ---------- */
+    .author-box {
+      margin-top: 52px;
+      padding: 22px 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .author-name {
+      font-family: "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Yu Mincho", "YuMincho", serif;
+      font-size: 1.05rem; font-weight: 600; margin: 0 0 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .author-name::before { content: "☾"; color: var(--accent); font-size: 1.3rem; line-height: 1; }
+    .author-text { margin: 0; color: var(--muted); font-size: 0.92rem; line-height: 1.85; }
+    .author-link { margin: 10px 0 0; font-size: 0.9rem; }
+    .author-link a { text-decoration: none; }
+    .author-link a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
     .related { margin-top: 56px; }
     .related-title {
@@ -120,6 +269,8 @@ const related = allPosts
     .related-meta { color: var(--muted); font-size: 0.8rem; }
     @media (max-width: 640px) {
       article h1 { font-size: 1.4rem; }
+      .toc { padding: 14px 16px 10px; }
+      .author-box { padding: 18px 16px; }
       .related-thumb { flex-basis: 104px; }
       .related-body { padding: 10px 12px 10px 0; }
     }

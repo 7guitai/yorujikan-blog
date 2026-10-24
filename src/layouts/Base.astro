@@ -32,6 +32,7 @@ const ogImage = new URL('/ogp.png', Astro.site);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <slot name="head" />
     <style>
       :root {
         --bg: #0d1120;
@@ -145,6 +146,15 @@ const ogImage = new URL('/ogp.png', Astro.site);
         white-space: nowrap;
       }
 
+
+      @media (max-width: 640px) {
+        body { font-size: 15.5px; }
+        main { padding: 26px 16px 56px; }
+        .site-header .inner { padding: 12px 16px; gap: 10px 16px; }
+        .site-nav { margin-left: 0; }
+      }
+    </style>
+    <style is:global>
       /* ---------- 記事本文 ---------- */
       article { font-size: 1.02rem; }
       article p { margin: 1.1em 0; }
@@ -216,12 +226,27 @@ const ogImage = new URL('/ogp.png', Astro.site);
         padding: 0.1em 0.4em;
         font-size: 0.9em;
       }
-
+      /* ---------- Amazonリンクのボタン化 ---------- */
+      article a[href*="amazon.co.jp"] {
+        display: inline-block;
+        background: linear-gradient(180deg, #eccf95 0%, var(--accent) 100%);
+        color: #2a2008;
+        font-weight: 700;
+        text-decoration: none;
+        padding: 0.38em 1.15em;
+        margin: 0.2em 0.1em;
+        border: 1px solid #b98f3e;
+        border-radius: 999px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+        transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      article a[href*="amazon.co.jp"]:hover {
+        color: #2a2008;
+        filter: brightness(1.08);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
       @media (max-width: 640px) {
-        body { font-size: 15.5px; }
-        main { padding: 26px 16px 56px; }
-        .site-header .inner { padding: 12px 16px; gap: 10px 16px; }
-        .site-nav { margin-left: 0; }
         article h2 { font-size: 1.22rem; }
         article table { font-size: 0.84rem; }
       }
