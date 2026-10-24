@@ -532,6 +532,10 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
          Responsive
          ========================================================= */
       @media (max-width: 959px) {
+        /* ヘッダー(z-index:50)がスタッキングコンテキストを作り、中のドロワーメニューが
+           オーバーレイ(55)より下に描画されてメニュー自体が暗くなる問題への対策。
+           モバイルではヘッダー全体をオーバーレイより前面に出す */
+        .l-header { z-index: 90; }
         .l-content { grid-template-columns: 1fr; gap: 24px; }
         .widget--sticky { display: none; }
         .l-header__inner { height: 60px; }
