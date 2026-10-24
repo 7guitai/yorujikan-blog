@@ -15,8 +15,22 @@ const { Content, headings } = await render(post);
 const formatDate = (d: Date) =>
   `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
 
-// 目次: h2 の見出しから生成
-const tocHeadings = headings.filter((h) => h.depth === 2);
+// 目次: h2/h3 からネスト構造を生成（本文内TOC用）
+interface TocItem {
+  text: string;
+  slug: string;
+  children: { text: string; slug: string }[];
+}
+const tocItems: TocItem[] = [];
+for (const h of headings) {
+  if (h.depth === 2) {
+    tocItems.push({ text: h.text, slug: h.slug, children: [] });
+  } else if (h.depth === 3 && tocItems.length > 0) {
+    tocItems[tocItems.length - 1].children.push({ text: h.text, slug: h.slug });
+  }
+}
+// サイドバー目次用（h2のみ、Base経由でSidebarへ）
+const sidebarToc = headings.filter((h) => h.depth === 2);
 
 // 構造化データ
 const pageURL = new URL(Astro.url.pathname, Astro.site).toString();
@@ -64,8 +78,18 @@ const faqJsonLd = post.data.faq
     }
   : null;
 
-// 関連記事: タグが重なる記事を優先し、次に新しい順で最大3件
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+
+// 前後記事（公開日昇順で隣り合う記事）
+const byDateAsc = [...allPosts].sort(
+  (a, b) => a.data.pubDate.getTime() - b.data.pubDate.getTime(),
+);
+const myIndex = byDateAsc.findIndex((p) => p.id === post.id);
+const prevPost = myIndex > 0 ? byDateAsc[myIndex - 1] : null;
+const nextPost =
+  myIndex >= 0 && myIndex < byDateAsc.length - 1 ? byDateAsc[myIndex + 1] : null;
+
+// 関連記事: タグが重なる記事を優先し、次に新しい順で最大4件
 const myTags = new Set(post.data.tags);
 const related = allPosts
   .filter((p) => p.id !== post.id)
@@ -78,11 +102,13 @@ const related = allPosts
       b.score - a.score ||
       b.post.data.pubDate.getTime() - a.post.data.pubDate.getTime(),
   )
-  .slice(0, 3)
+  .slice(0, 4)
   .map(({ post: p }) => p);
+
+const firstTag = post.data.tags[0];
 ---
 
-<Base title={post.data.title} description={post.data.description}>
+<Base title={post.data.title} description={post.data.description} toc={sidebarToc}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />
@@ -91,188 +117,134 @@ const related = allPosts
     )}
   </Fragment>
 
-  <nav class="breadcrumb" aria-label="パンくずリスト">
-    <ol>
-      <li><a href="/">ホーム</a></li>
-      <li aria-current="page">{post.data.title}</li>
-    </ol>
-  </nav>
+  <Fragment slot="breadcrumb">
+    <li><a href="/">ホーム</a></li>
+    <li aria-current="page">{post.data.title}</li>
+  </Fragment>
 
-  <article>
-    <h1>{post.data.title}</h1>
-    <aside class="pr-note">
-      この記事にはアフィリエイトリンクが含まれます。リンク先で商品を購入いただくと、
-      サイト運営の支えになります（価格が変わることはありません）。
-    </aside>
-    <div class="post-meta">
-      <time datetime={post.data.pubDate.toISOString()}>
-        公開: {formatDate(post.data.pubDate)}
-      </time>
-      {post.data.updatedDate && (
-        <time datetime={post.data.updatedDate.toISOString()}>
-          更新: {formatDate(post.data.updatedDate)}
+  <article class="post">
+    <header class="post-head">
+      <h1 class="post-title">{post.data.title}</h1>
+      <div class="post-meta">
+        {firstTag && (
+          <a class="cat-label" href={`/tags/${firstTag}/`}>{firstTag}</a>
+        )}
+        <time class="date" datetime={post.data.pubDate.toISOString()}>
+          <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0-18zm0 4v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          {formatDate(post.data.pubDate)}
         </time>
+        {post.data.updatedDate && (
+          <time class="date" datetime={post.data.updatedDate.toISOString()}>
+            更新: {formatDate(post.data.updatedDate)}
+          </time>
+        )}
+      </div>
+      {post.data.heroImage && (
+        <div class="eyecatch">
+          <img src={post.data.heroImage} alt={post.data.title} />
+        </div>
       )}
-      {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+    </header>
+
+    <div class="post-content">
+      <div class="pr-note">
+        <strong>📢 PR：</strong>この記事にはアフィリエイトリンクが含まれます。リンク先で商品を購入いただくと、サイト運営の支えになります（価格が変わることはありません）。
+      </div>
+
+      {tocItems.length > 0 && (
+        <div class="toc" id="toc">
+          <div class="toc__head">
+            <span>目次</span>
+            <button class="toc__toggle" id="tocToggle" type="button">閉じる</button>
+          </div>
+          <ol class="toc__list" id="tocList">
+            {tocItems.map((item) => (
+              <li>
+                <a href={`#${item.slug}`}>{item.text}</a>
+                {item.children.length > 0 && (
+                  <ol>
+                    {item.children.map((child) => (
+                      <li><a href={`#${child.slug}`}>{child.text}</a></li>
+                    ))}
+                  </ol>
+                )}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      <Content />
     </div>
-    {post.data.heroImage && (
-      <img class="hero-image" src={post.data.heroImage} alt={post.data.title} />
-    )}
-    {tocHeadings.length > 0 && (
-      <nav class="toc" aria-label="目次">
-        <p class="toc-title">もくじ</p>
-        <ol class="toc-list">
-          {tocHeadings.map((h) => (
-            <li><a href={`#${h.slug}`}>{h.text}</a></li>
-          ))}
-        </ol>
+
+    <div class="share">
+      <p class="share__title">よかったらシェアしてね！</p>
+      <ul class="share__list">
+        <li><a href="#" class="sns sns--x" data-share="x">X</a></li>
+        <li><a href="#" class="sns sns--fb" data-share="fb">f</a></li>
+        <li><a href="#" class="sns sns--hb" data-share="hb">B!</a></li>
+        <li><a href="#" class="sns sns--line" data-share="line">LINE</a></li>
+        <li><button class="sns sns--copy" id="copyBtn" type="button">URL</button></li>
+      </ul>
+      <p class="share__copied" id="copied">URLをコピーしました！</p>
+    </div>
+
+    {(prevPost || nextPost) && (
+      <nav class="pn-links">
+        {prevPost ? (
+          <a href={`/blog/${prevPost.id}/`} class="pn pn--prev">
+            <span>前の記事</span>
+            {prevPost.data.title}
+          </a>
+        ) : (
+          <span></span>
+        )}
+        {nextPost ? (
+          <a href={`/blog/${nextPost.id}/`} class="pn pn--next">
+            <span>次の記事</span>
+            {nextPost.data.title}
+          </a>
+        ) : (
+          <span></span>
+        )}
       </nav>
     )}
-    <Content />
-  </article>
 
-  <section class="author-box">
-    <p class="author-name">よるじかん編集部</p>
-    <p class="author-text">
-      夜のセルフケアと快眠道具を調べるのが好きな個人運営ブログです。
-      実際に使ったもの・調べたものを、よい点も気になる点も含めて正直にまとめています。
-    </p>
-    <p class="author-link"><a href="/about/">このブログについて →</a></p>
-  </section>
-
-  {related.length > 0 && (
-    <section class="related">
-      <h2 class="related-title">関連記事</h2>
-      <ul class="related-list">
-        {related.map((p) => (
-          <li class="related-card">
-            <a href={`/blog/${p.id}/`} class="related-thumb" aria-hidden="true" tabindex="-1">
-              {p.data.heroImage ? (
-                <img src={p.data.heroImage} alt="" loading="lazy" />
-              ) : (
-                <span class="related-thumb-empty">☾</span>
-              )}
-            </a>
-            <div class="related-body">
-              <a href={`/blog/${p.id}/`} class="related-link">{p.data.title}</a>
-              <div class="related-meta">
-                <time datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+    <section class="author">
+      <h2 class="section-title">この記事を書いた人</h2>
+      <div class="author__inner">
+        <div class="avatar avatar--lg">☾</div>
+        <div>
+          <p class="author__name">よるじかん編集部</p>
+          <p class="author__desc">
+            夜のセルフケアと快眠道具を調べるのが好きな個人運営ブログです。実際に使ったもの・調べたものを、よい点も気になる点も含めて正直にまとめています。
+          </p>
+          <p class="author__desc"><a href="/about/">このブログについて →</a></p>
+        </div>
+      </div>
     </section>
-  )}
 
-  <p class="back"><a href="/">← 記事一覧へ戻る</a></p>
-  <style>
-    /* ---------- パンくず ---------- */
-    .breadcrumb { margin: 0 0 20px; }
-    .breadcrumb ol {
-      list-style: none; display: flex; flex-wrap: wrap; gap: 6px;
-      margin: 0; padding: 0; font-size: 0.82rem; color: var(--muted);
-    }
-    .breadcrumb li { display: inline-flex; align-items: center; gap: 6px; }
-    .breadcrumb li + li::before { content: "＞"; color: var(--accent); font-size: 0.72rem; }
-    .breadcrumb a { color: var(--muted); text-decoration: none; }
-    .breadcrumb a:hover { color: var(--accent); }
-
-    /* ---------- PR表記 ---------- */
-    .pr-note {
-      margin: 14px 0 0;
-      padding: 10px 14px;
-      font-size: 0.8rem;
-      line-height: 1.7;
-      color: var(--muted);
-      background: var(--surface);
-      border: 1px dashed var(--border);
-      border-radius: 10px;
-    }
-
-    .post-meta { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 0.85rem; margin: 14px 0 26px; flex-wrap: wrap; }
-    .hero-image {
-      width: 100%; height: auto; display: block;
-      border-radius: var(--radius);
-      margin: 0 0 30px;
-    }
-    .back { margin-top: 44px; }
-    article h1 { font-size: 1.62rem; line-height: 1.55; margin: 0; }
-
-    /* ---------- 目次 ---------- */
-    .toc {
-      margin: 0 0 34px;
-      padding: 18px 22px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--accent);
-      border-radius: 10px;
-    }
-    .toc-title {
-      font-family: "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Yu Mincho", "YuMincho", serif;
-      font-size: 1.02rem; font-weight: 600; margin: 0 0 8px; color: var(--accent);
-      letter-spacing: 0.06em;
-    }
-    .toc-list { margin: 0; padding-left: 1.35em; }
-    .toc-list li { margin: 0.3em 0; }
-    .toc-list li::marker { color: var(--accent); }
-    .toc-list a { color: var(--text); text-decoration: none; }
-    .toc-list a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-
-    /* ---------- 著者プロフィール ---------- */
-    .author-box {
-      margin-top: 52px;
-      padding: 22px 24px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-    }
-    .author-name {
-      font-family: "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Yu Mincho", "YuMincho", serif;
-      font-size: 1.05rem; font-weight: 600; margin: 0 0 8px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .author-name::before { content: "☾"; color: var(--accent); font-size: 1.3rem; line-height: 1; }
-    .author-text { margin: 0; color: var(--muted); font-size: 0.92rem; line-height: 1.85; }
-    .author-link { margin: 10px 0 0; font-size: 0.9rem; }
-    .author-link a { text-decoration: none; }
-    .author-link a:hover { text-decoration: underline; text-underline-offset: 3px; }
-
-    .related { margin-top: 56px; }
-    .related-title {
-      font-family: "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Yu Mincho", "YuMincho", serif;
-      font-size: 1.25rem; font-weight: 600;
-      margin: 0 0 18px; padding-bottom: 0.4em;
-      border-bottom: 1px solid var(--border);
-    }
-    .related-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
-    .related-card {
-      display: flex; gap: 16px; align-items: stretch;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: background 0.2s ease;
-    }
-    .related-card:hover { background: var(--card-hover); }
-    .related-thumb { flex: 0 0 148px; display: block; background: #232c4c; }
-    .related-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .related-thumb-empty {
-      width: 100%; height: 100%; min-height: 84px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem; color: var(--accent);
-      background: linear-gradient(135deg, #1c2547 0%, #2a3355 55%, #3a4570 100%);
-    }
-    .related-body { padding: 12px 16px 12px 0; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
-    .related-link { color: var(--text); font-weight: 700; font-size: 0.98rem; line-height: 1.6; text-decoration: none; }
-    .related-link:hover { color: var(--accent); }
-    .related-meta { color: var(--muted); font-size: 0.8rem; }
-    @media (max-width: 640px) {
-      article h1 { font-size: 1.4rem; }
-      .toc { padding: 14px 16px 10px; }
-      .author-box { padding: 18px 16px; }
-      .related-thumb { flex-basis: 104px; }
-      .related-body { padding: 10px 12px 10px 0; }
-    }
-  </style>
+    {related.length > 0 && (
+      <section class="related">
+        <h2 class="section-title">関連記事</h2>
+        <ul class="card-list">
+          {related.map((p, i) => (
+            <li>
+              <a href={`/blog/${p.id}/`}>
+                <div class={`card-thumb c${(i % 4) + 1}`}>
+                  {p.data.heroImage && (
+                    <img src={p.data.heroImage} alt="" loading="lazy" />
+                  )}
+                </div>
+                <p>{p.data.title}</p>
+                <time datetime={p.data.pubDate.toISOString()}>
+                  {formatDate(p.data.pubDate)}
+                </time>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </article>
 </Base>

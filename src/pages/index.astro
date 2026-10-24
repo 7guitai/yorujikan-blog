@@ -28,12 +28,14 @@ const formatDate = (d: Date) =>
   title="よるじかん｜電源オフの暮らしと快眠道具"
   description="寝る前のセルフケアや快眠グッズを、選び方と比較とあわせて紹介する個人ブログ「よるじかん」の記事一覧です。"
 >
-  <h1>よるじかん</h1>
-  <p class="lead">寝る前の時間を整えるセルフケアグッズ・快眠道具を、選び方と比較とあわせて紹介しています。</p>
+  <div class="page-head">
+    <h1>よるじかん</h1>
+    <p class="lead">寝る前の時間を整えるセルフケアグッズ・快眠道具を、選び方と比較とあわせて紹介しています。</p>
+  </div>
 
   {featured && (
-    <section class="featured">
-      <h2 class="section-title">おすすめ記事</h2>
+    <section>
+      <h2 class="sec-title">おすすめ記事</h2>
       <a class="featured-card" href={`/blog/${featured.id}/`}>
         <span class="featured-thumb">
           {featured.data.heroImage ? (
@@ -44,20 +46,24 @@ const formatDate = (d: Date) =>
           <span class="featured-badge">最新記事</span>
         </span>
         <span class="featured-body">
-          <span class="featured-title">{featured.data.title}</span>
           <span class="featured-meta">
-            <time datetime={featured.data.pubDate.toISOString()}>{formatDate(featured.data.pubDate)}</time>
-            {featured.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+            {featured.data.tags[0] && (
+              <span class="cat-label">{featured.data.tags[0]}</span>
+            )}
+            <time datetime={featured.data.pubDate.toISOString()}>
+              {formatDate(featured.data.pubDate)}
+            </time>
           </span>
+          <span class="featured-title">{featured.data.title}</span>
           <span class="featured-desc">{featured.data.description}</span>
-          <span class="featured-more">記事を読む →</span>
+          <span class="featured-more">記事を読む ›</span>
         </span>
       </a>
     </section>
   )}
 
-  <section class="tag-section">
-    <h2 class="section-title">タグから探す</h2>
+  <section>
+    <h2 class="sec-title">タグから探す</h2>
     <ul class="tag-chips">
       {allTags.map(([tag, count]) => (
         <li>
@@ -68,125 +74,131 @@ const formatDate = (d: Date) =>
   </section>
 
   <section>
-    <h2 class="section-title">記事一覧</h2>
-    <ul class="post-list">
-      {restPosts.map((post) => (
+    <h2 class="sec-title">記事一覧</h2>
+    <ul class="post-grid">
+      {restPosts.map((post, i) => (
         <li class="post-card">
-          <a href={`/blog/${post.id}/`} class="post-thumb" aria-hidden="true" tabindex="-1">
+          <a href={`/blog/${post.id}/`} class="post-card__thumb">
             {post.data.heroImage ? (
               <img src={post.data.heroImage} alt="" loading="lazy" />
             ) : (
-              <span class="post-thumb-empty">☾</span>
+              <span class={`post-card__thumb-empty c${(i % 4) + 1}`}>☾</span>
             )}
           </a>
-          <div class="post-body">
-            <a href={`/blog/${post.id}/`} class="post-title">{post.data.title}</a>
-            <div class="post-meta">
-              <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
-              {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+          <div class="post-card__body">
+            <div class="post-card__meta">
+              {post.data.tags[0] && (
+                <span class="cat-label">{post.data.tags[0]}</span>
+              )}
+              <time datetime={post.data.pubDate.toISOString()}>
+                {formatDate(post.data.pubDate)}
+              </time>
             </div>
-            <p class="post-desc">{post.data.description}</p>
+            <a href={`/blog/${post.id}/`} class="post-card__title">{post.data.title}</a>
+            <p class="post-card__desc">{post.data.description}</p>
           </div>
         </li>
       ))}
     </ul>
   </section>
   <style>
-    .lead { color: var(--muted); margin: 0 0 30px; }
-    .section-title {
-      font-family: "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Yu Mincho", "YuMincho", serif;
-      font-size: 1.3rem; font-weight: 600;
-      margin: 42px 0 18px; padding-bottom: 0.4em;
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; gap: 8px;
+    .page-head {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-bottom: 32px;
     }
-    .section-title::before { content: "☾"; color: var(--accent); font-size: 1.1rem; }
-    section:first-of-type .section-title { margin-top: 0; }
+    .page-head h1 { font-size: 24px; margin: 0 0 8px; line-height: 1.5; }
+    .lead { color: #555; margin: 0; font-size: 15px; }
+    .sec-title {
+      font-size: 18px; margin: 36px 0 16px; padding-bottom: 8px;
+      border-bottom: 2px solid var(--main);
+    }
+    section:first-of-type .sec-title { margin-top: 0; }
 
     /* ---------- おすすめ記事（特集） ---------- */
     .featured-card {
-      display: block;
-      background: var(--card);
-      border: 1px solid var(--accent);
-      border-radius: var(--radius);
-      overflow: hidden;
-      text-decoration: none;
-      color: var(--text);
-      transition: background 0.2s ease, transform 0.2s ease;
+      display: flex; background: var(--white); border-radius: var(--radius);
+      overflow: hidden; color: var(--text); box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+      transition: .2s;
     }
-    .featured-card:hover { background: var(--card-hover); transform: translateY(-2px); color: var(--text); }
-    .featured-thumb { display: block; position: relative; aspect-ratio: 21 / 9; overflow: hidden; background: #232c4c; }
+    .featured-card:hover { opacity: 1; box-shadow: 0 4px 14px rgba(0, 0, 0, .1); }
+    .featured-thumb {
+      position: relative; flex: 0 0 52%; aspect-ratio: 16 / 9;
+      overflow: hidden; background: var(--main-light); display: block;
+    }
     .featured-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .featured-thumb-empty {
-      width: 100%; height: 100%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 3.4rem; color: var(--accent);
-      background: linear-gradient(135deg, #1c2547 0%, #2a3355 55%, #3a4570 100%);
+      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; color: var(--main);
+      background: linear-gradient(135deg, #8fb9a8, var(--main)); color: #fff;
     }
     .featured-badge {
-      position: absolute; top: 14px; left: 14px;
-      background: var(--accent); color: #2a2008;
-      font-size: 0.78rem; font-weight: 700;
-      padding: 3px 12px; border-radius: 999px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      position: absolute; top: 12px; left: 12px;
+      background: var(--accent); color: #fff;
+      font-size: 12px; font-weight: 700; padding: 2px 12px; border-radius: 3px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
     }
-    .featured-body { display: block; padding: 22px 26px 24px; }
-    .featured-title {
-      display: block;
-      font-size: 1.3rem; font-weight: 700; line-height: 1.6;
-      font-family: "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Yu Mincho", "YuMincho", serif;
+    .featured-body {
+      flex: 1; min-width: 0; padding: 20px 24px;
+      display: flex; flex-direction: column; gap: 10px; justify-content: center;
     }
-    .featured-card:hover .featured-title { color: var(--accent); }
-    .featured-meta { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 0.82rem; margin-top: 10px; flex-wrap: wrap; }
-    .featured-desc { display: block; margin-top: 12px; color: var(--muted); font-size: 0.95rem; line-height: 1.85; }
-    .featured-more { display: inline-block; margin-top: 14px; color: var(--accent); font-weight: 700; font-size: 0.92rem; }
+    .featured-meta { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-sub); }
+    .featured-title { font-size: 19px; font-weight: 700; line-height: 1.55; }
+    .featured-card:hover .featured-title { color: var(--main); }
+    .featured-desc {
+      font-size: 13.5px; color: #555; line-height: 1.75; margin: 0;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .featured-more { color: var(--accent); font-weight: 700; font-size: 14px; }
 
     /* ---------- タグチップ ---------- */
-    .tag-chips { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+    .tag-chips { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
     .tag-chip {
       display: inline-flex; align-items: center; gap: 7px;
-      background: #232c4c; color: var(--accent-soft);
+      background: var(--white); color: var(--text);
       border: 1px solid var(--border); border-radius: 999px;
-      padding: 4px 14px; font-size: 0.88rem; text-decoration: none;
-      transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+      padding: 4px 14px; font-size: 13.5px; transition: .15s;
     }
-    .tag-chip:hover { color: var(--accent); border-color: var(--accent); background: var(--card-hover); }
+    .tag-chip:hover { border-color: var(--main); color: var(--main); opacity: 1; }
     .tag-count {
-      background: var(--surface); color: var(--muted);
-      border-radius: 999px; padding: 0 7px; font-size: 0.74rem; line-height: 1.7;
+      background: var(--main-light); color: var(--main);
+      border-radius: 999px; padding: 0 7px; font-size: 11px; line-height: 1.8; font-weight: 700;
     }
 
     /* ---------- 記事カード ---------- */
-    .post-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 22px; }
+    .post-grid {
+      list-style: none; padding: 0; margin: 0;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+    }
     .post-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: background 0.2s ease, transform 0.2s ease;
+      background: var(--white); border-radius: var(--radius); overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .06); display: flex; flex-direction: column;
+      transition: .2s;
     }
-    .post-card:hover { background: var(--card-hover); transform: translateY(-2px); }
-    .post-thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: #232c4c; }
-    .post-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .post-thumb-empty {
-      width: 100%; height: 100%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.6rem; color: var(--accent);
-      background: linear-gradient(135deg, #1c2547 0%, #2a3355 55%, #3a4570 100%);
+    .post-card:hover { box-shadow: 0 4px 14px rgba(0, 0, 0, .1); }
+    .post-card__thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: var(--main-light); }
+    .post-card__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: .2s; }
+    .post-card:hover .post-card__thumb img { opacity: .88; }
+    .post-card__thumb-empty {
+      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+      font-size: 2.4rem; color: #fff;
     }
-    .post-body { padding: 18px 22px 20px; }
-    .post-title {
-      font-size: 1.12rem; font-weight: 700; line-height: 1.6;
-      color: var(--text); text-decoration: none;
+    .post-card__body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; }
+    .post-card__meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-sub); flex-wrap: wrap; }
+    .post-card__title { font-size: 15.5px; font-weight: 700; line-height: 1.55; color: var(--text); }
+    .post-card__title:hover { color: var(--main); opacity: 1; }
+    .post-card__desc {
+      margin: 0; font-size: 13px; color: #555; line-height: 1.75;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
     }
-    .post-title:hover { color: var(--accent); }
-    .post-meta { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 0.82rem; margin-top: 8px; flex-wrap: wrap; }
-    .post-desc { margin: 10px 0 0; color: var(--muted); font-size: 0.92rem; line-height: 1.75; }
-    @media (max-width: 640px) {
-      .post-body { padding: 15px 16px 17px; }
-      .featured-body { padding: 17px 16px 19px; }
-      .featured-title { font-size: 1.14rem; }
-      .featured-thumb { aspect-ratio: 16 / 9; }
+    @media (max-width: 700px) {
+      .featured-card { flex-direction: column; }
+      .featured-thumb { flex: none; }
+      .featured-body { padding: 16px 18px 18px; }
+      .featured-title { font-size: 17px; }
+      .post-grid { grid-template-columns: 1fr; }
+      .page-head { padding: 22px 18px; }
     }
   </style>
 </Base>

@@ -25,33 +25,37 @@ const formatDate = (d: Date) =>
   title={`タグ「${tag}」の記事一覧`}
   description={`よるじかんのタグ「${tag}」が付いた記事一覧です。寝る前のセルフケアや快眠グッズを、選び方と比較とあわせて紹介しています。`}
 >
-  <nav class="breadcrumb" aria-label="パンくずリスト">
-    <ol>
-      <li><a href="/">ホーム</a></li>
-      <li aria-current="page">タグ「{tag}」</li>
-    </ol>
-  </nav>
+  <Fragment slot="breadcrumb">
+    <li><a href="/">ホーム</a></li>
+    <li aria-current="page">タグ「{tag}」</li>
+  </Fragment>
 
-  <h1>タグ「{tag}」の記事</h1>
-  <p class="lead">全{posts.length}件の記事があります。</p>
+  <div class="page-head">
+    <h1>タグ「{tag}」の記事</h1>
+    <p class="lead">全{posts.length}件の記事があります。</p>
+  </div>
 
-  <ul class="post-list">
-    {posts.map((post) => (
+  <ul class="post-grid">
+    {posts.map((post, i) => (
       <li class="post-card">
-        <a href={`/blog/${post.id}/`} class="post-thumb" aria-hidden="true" tabindex="-1">
+        <a href={`/blog/${post.id}/`} class="post-card__thumb">
           {post.data.heroImage ? (
             <img src={post.data.heroImage} alt="" loading="lazy" />
           ) : (
-            <span class="post-thumb-empty">☾</span>
+            <span class={`post-card__thumb-empty c${(i % 4) + 1}`}>☾</span>
           )}
         </a>
-        <div class="post-body">
-          <a href={`/blog/${post.id}/`} class="post-title">{post.data.title}</a>
-          <div class="post-meta">
-            <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
-            {post.data.tags.map((t) => <span class="tag">{t}</span>)}
+        <div class="post-card__body">
+          <div class="post-card__meta">
+            {post.data.tags[0] && (
+              <span class="cat-label">{post.data.tags[0]}</span>
+            )}
+            <time datetime={post.data.pubDate.toISOString()}>
+              {formatDate(post.data.pubDate)}
+            </time>
           </div>
-          <p class="post-desc">{post.data.description}</p>
+          <a href={`/blog/${post.id}/`} class="post-card__title">{post.data.title}</a>
+          <p class="post-card__desc">{post.data.description}</p>
         </div>
       </li>
     ))}
@@ -59,44 +63,44 @@ const formatDate = (d: Date) =>
 
   <p class="back"><a href="/">← 記事一覧へ戻る</a></p>
   <style>
-    .breadcrumb { margin: 0 0 20px; }
-    .breadcrumb ol {
-      list-style: none; display: flex; flex-wrap: wrap; gap: 6px;
-      margin: 0; padding: 0; font-size: 0.82rem; color: var(--muted);
-    }
-    .breadcrumb li { display: inline-flex; align-items: center; gap: 6px; }
-    .breadcrumb li + li::before { content: "＞"; color: var(--accent); font-size: 0.72rem; }
-    .breadcrumb a { color: var(--muted); text-decoration: none; }
-    .breadcrumb a:hover { color: var(--accent); }
-    .lead { color: var(--muted); margin: 0 0 28px; }
-    .back { margin-top: 44px; }
-    .post-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 22px; }
-    .post-card {
-      background: var(--card);
-      border: 1px solid var(--border);
+    .page-head {
+      background: var(--white);
       border-radius: var(--radius);
-      overflow: hidden;
-      transition: background 0.2s ease, transform 0.2s ease;
+      padding: 28px 32px;
+      margin-bottom: 28px;
     }
-    .post-card:hover { background: var(--card-hover); transform: translateY(-2px); }
-    .post-thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: #232c4c; }
-    .post-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .post-thumb-empty {
-      width: 100%; height: 100%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.6rem; color: var(--accent);
-      background: linear-gradient(135deg, #1c2547 0%, #2a3355 55%, #3a4570 100%);
+    .page-head h1 { font-size: 24px; margin: 0 0 8px; line-height: 1.5; }
+    .lead { color: #555; margin: 0; font-size: 15px; }
+    .back { margin-top: 36px; font-size: 14px; }
+
+    .post-grid {
+      list-style: none; padding: 0; margin: 0;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
     }
-    .post-body { padding: 18px 22px 20px; }
-    .post-title {
-      font-size: 1.12rem; font-weight: 700; line-height: 1.6;
-      color: var(--text); text-decoration: none;
+    .post-card {
+      background: var(--white); border-radius: var(--radius); overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .06); display: flex; flex-direction: column;
+      transition: .2s;
     }
-    .post-title:hover { color: var(--accent); }
-    .post-meta { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 0.82rem; margin-top: 8px; flex-wrap: wrap; }
-    .post-desc { margin: 10px 0 0; color: var(--muted); font-size: 0.92rem; line-height: 1.75; }
-    @media (max-width: 640px) {
-      .post-body { padding: 15px 16px 17px; }
+    .post-card:hover { box-shadow: 0 4px 14px rgba(0, 0, 0, .1); }
+    .post-card__thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: var(--main-light); }
+    .post-card__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: .2s; }
+    .post-card:hover .post-card__thumb img { opacity: .88; }
+    .post-card__thumb-empty {
+      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+      font-size: 2.4rem; color: #fff;
+    }
+    .post-card__body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; }
+    .post-card__meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-sub); flex-wrap: wrap; }
+    .post-card__title { font-size: 15.5px; font-weight: 700; line-height: 1.55; color: var(--text); }
+    .post-card__title:hover { color: var(--main); opacity: 1; }
+    .post-card__desc {
+      margin: 0; font-size: 13px; color: #555; line-height: 1.75;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    @media (max-width: 700px) {
+      .post-grid { grid-template-columns: 1fr; }
+      .page-head { padding: 22px 18px; }
     }
   </style>
 </Base>
