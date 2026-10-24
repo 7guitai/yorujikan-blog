@@ -589,6 +589,7 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
           {navTags.map((tag) => (
             <li><a href={`/tags/${tag}/`}>{tag}</a></li>
           ))}
+          <li><a href="/sleep-cycle/">睡眠サイクル計算</a></li>
           <li><a href="/about/">このサイトについて</a></li>
         </ul>
       </nav>
@@ -613,6 +614,7 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
     <footer class="l-footer">
       <ul class="f-nav l-container">
         <li><a href="/">ホーム</a></li>
+        <li><a href="/sleep-cycle/">睡眠サイクル計算ツール</a></li>
         <li><a href="/about/">このサイトについて</a></li>
       </ul>
       <p class="f-disclosure l-container">
