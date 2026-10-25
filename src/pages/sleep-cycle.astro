@@ -3,164 +3,453 @@ import Base from '../layouts/Base.astro';
 ---
 
 <Base
-  title="睡眠サイクル計算ツール｜起床時間から就寝時刻を逆算"
-  description="起きる時間から、90分の睡眠サイクルに合わせた就寝時刻の目安を逆算できる無料ツール。すっきり目覚めたい日の夜更かし防止や、就寝リズムづくりにどうぞ。"
+title="睡眠サイクル計算ツール｜就寝・起床時刻を自動計算"
+description="起きる時間から就寝時刻を逆算、寝る時間から起床時刻を計算できる無料の睡眠サイクル計算ツール。「今すぐ寝る」ワンタップ計算、入眠時間の調整、昼寝モード付き。90分サイクルをもとに目覚めの目安時刻を提案します。"
 >
-  <Fragment slot="breadcrumb">
-    <li><a href="/">ホーム</a></li>
-    <li aria-current="page">睡眠サイクル計算ツール</li>
-  </Fragment>
+<Fragment slot="breadcrumb">
+<li><a href="/">ホーム</a></li>
+<li aria-current="page">睡眠サイクル計算ツール</li>
+</Fragment>
 
-  <article class="post">
-    <header class="post-head">
-      <h1 class="post-title">睡眠サイクル計算ツール</h1>
-    </header>
+<article class="post">
+<header class="post-head">
+<h1 class="post-title">睡眠サイクル計算ツール</h1>
+</header>
 
-    <div class="post-content">
-      <p>
-        眠りには約90分周期のリズム（睡眠サイクル）があるとされ、サイクルの切れ目で起きると目覚めがすっきりしやすいと言われています。
-        このツールでは、<span class="marker">起床時刻から逆算した就寝時刻の目安</span>と、<span class="marker">今夜の就寝時刻から計算した起床時刻の目安</span>の両方を計算できます。
-      </p>
+<div class="post-content">
+<p>
+眠りには約90分周期のリズム（睡眠サイクル）があるとされ、サイクルの切れ目で起きると目覚めがすっきりしやすいと言われています。
+このツールでは、<span class="marker">起床時刻から逆算した就寝時刻の目安</span>と、<span class="marker">就寝時刻から計算した起床時刻の目安</span>の両方を、時刻を変えるたびに自動で計算します。
+</p>
 
-      <div class="box box--info">
-        <p>計算の前提：1サイクル＝90分、ベッドに入ってから眠りにつくまで＝15分として計算します。サイクルの長さには個人差（80〜120分程度）があるため、あくまで目安としてご利用ください。</p>
-      </div>
+<div class="box box--info">
+<p>計算の前提：1サイクル＝90分として計算します。サイクルの長さには個人差（80〜120分程度）があるため、あくまで目安としてご利用ください。表示時刻はすべて「〜頃」の目安です。</p>
+</div>
 
-      <h2>起きる時間から、寝る時間を逆算する</h2>
-      <div class="tool-box">
-        <label for="wakeTime">起床時刻</label>
-        <input type="time" id="wakeTime" value="07:00" />
-        <button type="button" id="calcBed" class="cta-btn">就寝時刻を計算する</button>
-        <div id="bedResult" class="tool-result" aria-live="polite"></div>
-      </div>
+<div class="tool-box now-box">
+<p class="now-lead">🌙 もう布団に入るなら</p>
+<button type="button" id="sleepNow" class="cta-btn now-btn">今すぐ寝る → 起きる時刻の目安を見る</button>
+<div id="nowResult" class="tool-result" aria-live="polite"></div>
+</div>
 
-      <h2>寝る時間から、起きる時間を計算する</h2>
-      <div class="tool-box">
-        <label for="bedTime">就寝時刻（ベッドに入る時間）</label>
-        <input type="time" id="bedTime" value="23:30" />
-        <button type="button" id="calcWake" class="cta-btn">起床時刻を計算する</button>
-        <div id="wakeResult" class="tool-result" aria-live="polite"></div>
-      </div>
-      <p>
-        「今すぐ寝る」場合は、現在時刻を就寝時刻として入力すると、明日の起床候補がそのまま出ます。
-      </p>
+<div class="tool-box setting-box">
+<span class="setting-label">寝つくまでの時間（入眠時間）</span>
+<div class="pill-group" id="latencyGroup" role="group" aria-label="入眠時間の選択">
+<button type="button" class="pill" data-lat="10">10分</button>
+<button type="button" class="pill" data-lat="15">15分</button>
+<button type="button" class="pill" data-lat="20">20分</button>
+<button type="button" class="pill" data-lat="30">30分</button>
+</div>
+<p class="setting-note">布団に入ってから眠りにつくまでの目安です。寝つきには個人差があるので、自分の感覚に近いものを選んでください。下の計算すべてに反映されます。</p>
+</div>
 
-      <h2>使い方のポイント</h2>
-      <ul>
-        <li><strong>基本は5サイクル（7時間30分）か6サイクル（9時間）</strong>が目安。平日は5サイクル、休日は6サイクルなど、生活に合わせて選んでください。</li>
-        <li>4サイクル（6時間）は短期集中の日向けです。慢性的にならないよう注意しましょう。</li>
-        <li>計算結果の時刻にベッドに入れるよう、寝る前の準備（お風呂・スマホを置く・照明を落とす）を逆算して始めるのがコツです。</li>
-      </ul>
+<h2>起きる時間から、寝る時間を逆算する</h2>
+<div class="tool-box">
+<label for="wakeTime">起床時刻</label>
+<input type="time" id="wakeTime" value="07:00" />
+<div class="preset-row" aria-label="よく使う起床時刻">
+<button type="button" class="preset" data-wake="06:00">6:00</button>
+<button type="button" class="preset" data-wake="06:30">6:30</button>
+<button type="button" class="preset" data-wake="07:00">7:00</button>
+<button type="button" class="preset" data-wake="07:30">7:30</button>
+<button type="button" class="preset" data-wake="08:00">8:00</button>
+</div>
+<div id="bedResult" class="tool-result" aria-live="polite"></div>
+</div>
 
-      <h2>あわせて整えたい、寝室の環境</h2>
-      <p>
-        サイクルに合わせて寝ても、音や光で途中に目覚めてしまうと効果は半減します。環境づくりはこちらの記事も参考にしてください。
-      </p>
-      <ul>
-        <li><a href="/blog/sleep-earplugs-mask/">寝る時の耳栓おすすめ5選</a>（音・光対策の入門編）</li>
-        <li><a href="/blog/night-light/">寝室の間接照明・ナイトライトおすすめ5選</a>（寝つきやすい明かりづくり）</li>
-        <li><a href="/blog/pillow-guide/">枕の選び方とおすすめ5選</a>（寝姿勢から整える）</li>
-      </ul>
+<h2>寝る時間から、起きる時間を計算する</h2>
+<div class="tool-box">
+<label for="bedTime">就寝時刻（ベッドに入る時間）</label>
+<input type="time" id="bedTime" value="23:30" />
+<div id="wakeResult" class="tool-result" aria-live="polite"></div>
+</div>
 
-      <h2>よくある質問</h2>
-      <div class="faq">
-        <details>
-          <summary>睡眠サイクルは本当に90分きっかりですか？</summary>
-          <p>90分は平均的な目安で、実際には80〜120分程度の個人差があり、同じ人でも日によって変動します。このツールは計画の目安として使い、実際の目覚めの感覚に合わせて調整してください。</p>
-        </details>
-        <details>
-          <summary>お昼寝では使えますか？</summary>
-          <p>昼寝は20分程度の短い仮眠か、1サイクル（約90分）のどちらかが目安とされます。起床時刻から逆算する計算は昼寝にも応用できますが、夜の睡眠に影響しないよう、夕方以降の長い昼寝は避けるのが無難です。</p>
-        </details>
-        <details>
-          <summary>計算どおりに寝てもすっきりしません</summary>
-          <p>睡眠時間だけでなく、寝る前の光・カフェイン・室温なども影響します。眠りの悩みが続く場合は、無理にツールに合わせず、医療機関への相談も検討してください。</p>
-        </details>
-      </div>
-    </div>
-  </article>
+<h2>昼寝モード｜今から仮眠するなら</h2>
+<div class="tool-box">
+<p class="nap-lead">短い仮眠と、1サイクル分の仮眠の2パターンから、今から寝た場合に起きる時刻の目安を出します。</p>
+<div class="nap-row">
+<button type="button" class="cta-btn nap-btn" data-nap="20">20分の仮眠</button>
+<button type="button" class="cta-btn nap-btn" data-nap="90">90分（1サイクル）の仮眠</button>
+</div>
+<div id="napResult" class="tool-result" aria-live="polite"></div>
+<p class="setting-note">夕方遅くの長い昼寝は夜の眠りに影響することがあります。昼寝は午後の早い時間帯が無難です。</p>
+</div>
+
+<h2>使い方のポイント</h2>
+<ul>
+<li><strong>基本は5サイクル（7時間30分）か6サイクル（9時間）</strong>が目安。平日は5サイクル、休日は6サイクルなど、生活に合わせて選んでください。</li>
+<li>4サイクル（6時間）は忙しい日向けの目安です。短い睡眠が慢性的に続かないよう気をつけましょう。</li>
+<li>計算結果の時刻にベッドに入れるよう、寝る前の準備（お風呂・スマホを置く・照明を落とす）を逆算して始めるのがコツです。</li>
+<li>入力した時刻と入眠時間の設定はこの端末にだけ保存され、次回開いたときに自動で復元されます（外部に送信されることはありません）。</li>
+</ul>
+
+<h2>あわせて整えたい、寝室の環境</h2>
+<p>
+サイクルに合わせて寝ても、音や光で途中に目覚めてしまうと効果は半減します。環境づくりはこちらの記事も参考にしてください。
+</p>
+<ul>
+<li><a href="/blog/sleep-earplugs-mask/">寝る時の耳栓・アイマスクおすすめ5選</a>（音・光対策の入門編）</li>
+<li><a href="/blog/night-light/">寝室の間接照明・ナイトライトおすすめ5選</a>（寝つきやすい明かりづくり）</li>
+<li><a href="/blog/pillow-guide/">枕の選び方とおすすめ5選</a>（寝姿勢から整える）</li>
+</ul>
+
+<h2>よくある質問</h2>
+<div class="faq">
+<details>
+<summary>睡眠サイクルは本当に90分きっかりですか？</summary>
+<p>90分は平均的な目安で、実際には80〜120分程度の個人差があり、同じ人でも日によって変動します。このツールは計画の目安として使い、実際の目覚めの感覚に合わせて調整してください。</p>
+</details>
+<details>
+<summary>お昼寝では使えますか？</summary>
+<p>はい。「昼寝モード」で、今から20分程度の短い仮眠か、1サイクル（約90分）の仮眠をした場合に起きる時刻の目安を出せます。夜の睡眠に影響しないよう、夕方以降の長い昼寝は避けるのが無難です。</p>
+</details>
+<details>
+<summary>計算どおりに寝てもすっきりしません</summary>
+<p>睡眠時間だけでなく、寝る前の光・カフェイン・室温なども影響します。眠りの悩みが続く場合は、無理にツールに合わせず、医療機関への相談も検討してください。</p>
+</details>
+</div>
+</div>
+</article>
 </Base>
 
 <style>
-  .tool-box {
-    background: #fff;
-    border: 1px solid var(--border, #e3e3de);
-    border-radius: 12px;
-    padding: 20px;
-    margin: 16px 0 28px;
-  }
-  .tool-box label {
-    display: block;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .tool-box input[type="time"] {
-    font-size: 1.25rem;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-right: 12px;
-  }
-  .tool-result {
-    margin-top: 16px;
-  }
-  .tool-result table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .tool-result th, .tool-result td {
-    border: 1px solid #e3e3de;
-    padding: 8px 10px;
-    text-align: left;
-  }
-  .tool-result .rec {
-    color: var(--main, #2f6f5e);
-    font-weight: 700;
-  }
+.tool-box {
+background: #fff;
+border: 1px solid var(--border, #e3e3de);
+border-radius: 12px;
+padding: 20px;
+margin: 16px 0 28px;
+}
+.tool-box label {
+display: block;
+font-weight: 700;
+margin-bottom: 8px;
+}
+.tool-box input[type="time"] {
+font-size: 1.25rem;
+padding: 8px 12px;
+border: 1px solid #ccc;
+border-radius: 8px;
+}
+.now-box {
+text-align: center;
+border-color: var(--main, #2f6f5e);
+}
+.now-lead {
+font-weight: 700;
+margin: 0 0 10px;
+}
+.now-btn {
+font-size: 1.05rem;
+width: 100%;
+}
+.setting-box {
+padding: 16px 20px;
+}
+.setting-label {
+display: block;
+font-weight: 700;
+margin-bottom: 8px;
+}
+.setting-note {
+font-size: 0.85rem;
+color: #666;
+margin: 10px 0 0;
+}
+.pill-group,.preset-row,.nap-row {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+}
+.preset-row {
+margin-top: 12px;
+}
+.pill,.preset {
+border: 1px solid var(--main, #2f6f5e);
+background: #fff;
+color: var(--main, #2f6f5e);
+border-radius: 999px;
+padding: 6px 16px;
+font-size: 0.95rem;
+cursor: pointer;
+}
+.pill.active {
+background: var(--main, #2f6f5e);
+color: #fff;
+font-weight: 700;
+}
+.preset.active {
+background: #eef4f1;
+font-weight: 700;
+}
+.tool-result {
+margin-top: 16px;
+}
+.cards {
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+.scard {
+border: 1px solid #e3e3de;
+border-radius: 10px;
+padding: 12px 16px;
+background: #fff;
+}
+.scard.rec {
+border: 2px solid var(--main, #2f6f5e);
+background: #f2f8f5;
+}
+.scard.past {
+opacity: 0.45;
+}
+.scard.badge {
+display: inline-block;
+font-size: 0.78rem;
+font-weight: 700;
+color: var(--main, #2f6f5e);
+border: 1px solid var(--main, #2f6f5e);
+border-radius: 999px;
+padding: 1px 10px;
+margin-bottom: 6px;
+}
+.scard.rec.badge {
+background: var(--main, #2f6f5e);
+color: #fff;
+}
+.scard.t {
+font-size: 1.7rem;
+font-weight: 800;
+line-height: 1.2;
+cursor: pointer;
+}
+.scard.t.day {
+font-size: 0.85rem;
+font-weight: 700;
+color: #888;
+margin-left: 6px;
+}
+.scard.meta {
+font-size: 0.9rem;
+color: #555;
+margin-top: 2px;
+}
+.copy-hint {
+font-size: 0.78rem;
+color: #999;
+margin-top: 8px;
+}
+.past-note {
+font-size: 0.9rem;
+color: #555;
+background: #f7f7f5;
+border-radius: 8px;
+padding: 10px 14px;
+margin-top: 12px;
+}
+.nap-lead {
+margin-top: 0;
+}
+.nap-btn {
+flex: 1 1 150px;
+}
+.nap-out {
+font-size: 1.15rem;
+font-weight: 700;
+}
+.nap-out.t {
+font-size: 1.5rem;
+font-weight: 800;
+cursor: pointer;
+}
 </style>
 
 <script>
-  const CYCLE = 90;
-  const FALL_ASLEEP = 15;
+const CYCLE = 90;
+const LS = { wake: 'sc_wake', bed: 'sc_bed', lat: 'sc_lat'};
+let latency = 15;
 
-  function toMin(t) {
-    const [h, m] = t.split(':').map(Number);
-    return h * 60 + m;
-  }
-  function fmt(min) {
-    const v = ((min % 1440) + 1440) % 1440;
-    const h = Math.floor(v / 60);
-    const m = v % 60;
-    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
-  }
-  function hoursLabel(cycles) {
-    const total = cycles * CYCLE;
-    return Math.floor(total / 60) + '時間' + (total % 60 ? (total % 60) + '分' : '');
-  }
+const $ = (id) => document.getElementById(id);
+const wakeInput = $('wakeTime');
+const bedInput = $('bedTime');
 
-  document.getElementById('calcBed').addEventListener('click', () => {
-    const wake = toMin(document.getElementById('wakeTime').value || '07:00');
-    let rows = '';
-    [6, 5, 4].forEach((c) => {
-      const bed = wake - c * CYCLE - FALL_ASLEEP;
-      const cls = c === 5 || c === 6 ? ' class="rec"' : '';
-      rows += '<tr' + cls + '><td>' + c + 'サイクル（睡眠 ' + hoursLabel(c) + '）</td><td>' + fmt(bed) + ' にベッドへ</td></tr>';
-    });
-    document.getElementById('bedResult').innerHTML =
-      '<table><tr><th>サイクル数</th><th>就寝時刻の目安</th></tr>' + rows + '</table>' +
-      '<p>※太字はおすすめの5〜6サイクルです。就寝時刻は「ベッドに入る時間」で、入眠までの15分を含んでいます。</p>';
-  });
+function toMin(t) {
+const [h, m] = String(t || '').split(':').map(Number);
+return (isNaN(h)? 0: h) * 60 + (isNaN(m)? 0: m);
+}
+function fmt(min) {
+const v = ((min % 1440) + 1440) % 1440;
+return String(Math.floor(v / 60)).padStart(2, '0') + ':' + String(v % 60).padStart(2, '0');
+}
+function sleepLabel(cycles) {
+const total = cycles * CYCLE;
+return '睡眠 約' + Math.floor(total / 60) + '時間' + (total % 60? (total % 60) + '分': '');
+}
+const CYCLE_META = {
+6: { badge: 'しっかり休みたい日に', action: 'に布団へ', wakeAction: 'に起床'},
+5: { badge: '迷ったらこれ', action: 'に布団へ', wakeAction: 'に起床'},
+4: { badge: '忙しい日の目安', action: 'に布団へ', wakeAction: 'に起床'},
+};
 
-  document.getElementById('calcWake').addEventListener('click', () => {
-    const bed = toMin(document.getElementById('bedTime').value || '23:30');
-    let rows = '';
-    [6, 5, 4].forEach((c) => {
-      const wake = bed + FALL_ASLEEP + c * CYCLE;
-      const cls = c === 5 || c === 6 ? ' class="rec"' : '';
-      rows += '<tr' + cls + '><td>' + c + 'サイクル（睡眠 ' + hoursLabel(c) + '）</td><td>' + fmt(wake) + ' に起床</td></tr>';
-    });
-    document.getElementById('wakeResult').innerHTML =
-      '<table><tr><th>サイクル数</th><th>起床時刻の目安</th></tr>' + rows + '</table>' +
-      '<p>※太字はおすすめの5〜6サイクルです。アラームは起床時刻にセットしてください。</p>';
-  });
+function cardHTML(c, timeMin, dayLabel, actionText, isPast) {
+const meta = CYCLE_META[c];
+const cls = 'scard' + (c === 5? ' rec': '') + (isPast? ' past': '');
+return '<div class="' + cls + '">' +
+'<span class="badge">' + meta.badge + '</span>' +
+'<div class="t" data-copy="' + fmt(timeMin) + '" title="タップでコピー">' + fmt(timeMin) + '頃' +
+(dayLabel? '<span class="day">' + dayLabel + '</span>': '') + '</div>' +
+'<div class="meta">' + sleepLabel(c) + '（90分×' + c + 'サイクル＋入眠' + latency + '分）' + actionText + '</div>' +
+'</div>';
+}
+
+function renderBed() {
+const wake = toMin(wakeInput.value || '07:00');
+const now = new Date();
+const nowMin = now.getHours() * 60 + now.getMinutes();
+// 起床時刻の直近の到来を「その朝」とみなし、就寝候補が過去かどうか判定する
+const wakeToday = nowMin < wake;
+let html = '<div class="cards">';
+let allRecPast = true;
+[4, 5, 6].forEach((c) => {
+const bed = wake - c * CYCLE - latency;
+const bedNorm = ((bed % 1440) + 1440) % 1440;
+// 就寝が起床より手前（前日夜）か、当日未明か
+const dayLabel = bedNorm >= wake? '前日': (bedNorm < 720? '当日未明': '前日');
+// 過去判定：起床が今日の場合は前日夜の候補はすべて過去扱いにしない（今夜の話として扱う）
+// 起床が明日（現在時刻が起床を過ぎている）場合、前日＝今日の夜なので、現在時刻より前なら過去
+let isPast = false;
+if (!wakeToday) {
+isPast = bedNorm < nowMin && bedNorm >= 720;
+} else {
+isPast = bedNorm < nowMin && bedNorm < 720;
+}
+if ((c === 5 || c === 6) &&!isPast) allRecPast = false;
+html += cardHTML(c, bed, dayLabel, ' に布団に入る目安', isPast);
+});
+html += '</div>';
+if (allRecPast) {
+html += '<p class="past-note">おすすめの時刻は過ぎているようです。サイクルにこだわりすぎず、できるだけ早めに布団に入って休みましょう。</p>';
+}
+html += '<p class="copy-hint">時刻をタップするとコピーできます。アラームはスマホ標準の時計アプリで設定してください。</p>';
+$('bedResult').innerHTML = html;
+document.querySelectorAll('.preset').forEach((b) => {
+b.classList.toggle('active', b.dataset.wake === wakeInput.value);
+});
+}
+
+function wakeCardsHTML(bedMin) {
+let html = '<div class="cards">';
+[4, 5, 6].forEach((c) => {
+const wake = bedMin + latency + c * CYCLE;
+const wakeNorm = ((wake % 1440) + 1440) % 1440;
+const dayLabel = wake >= 1440? '翌日': '';
+html += cardHTML(c, wakeNorm, dayLabel, ' に起きる目安', false);
+});
+html += '</div>';
+html += '<p class="copy-hint">時刻をタップするとコピーできます。アラームはスマホ標準の時計アプリで設定してください。</p>';
+return html;
+}
+
+function renderWake() {
+const bed = toMin(bedInput.value || '23:30');
+$('wakeResult').innerHTML = wakeCardsHTML(bed);
+}
+
+function renderAll() {
+renderBed();
+renderWake();
+}
+
+function save() {
+try {
+localStorage.setItem(LS.wake, wakeInput.value);
+localStorage.setItem(LS.bed, bedInput.value);
+localStorage.setItem(LS.lat, String(latency));
+} catch (e) { /* 保存できない環境ではそのまま使う */}
+}
+
+// 入眠時間のピル
+const pills = document.querySelectorAll('#latencyGroup.pill');
+function syncPills() {
+pills.forEach((p) => p.classList.toggle('active', Number(p.dataset.lat) === latency));
+}
+pills.forEach((p) => {
+p.addEventListener('click', () => {
+latency = Number(p.dataset.lat);
+syncPills();
+save();
+renderAll();
+});
+});
+
+// プリセット
+document.querySelectorAll('.preset').forEach((b) => {
+b.addEventListener('click', () => {
+wakeInput.value = b.dataset.wake;
+save();
+renderBed();
+});
+});
+
+// 入力変更で自動計算
+wakeInput.addEventListener('input', () => { save(); renderBed();});
+wakeInput.addEventListener('change', () => { save(); renderBed();});
+bedInput.addEventListener('input', () => { save(); renderWake();});
+bedInput.addEventListener('change', () => { save(); renderWake();});
+
+// 今すぐ寝る
+$('sleepNow').addEventListener('click', () => {
+const now = new Date();
+const cur = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+bedInput.value = cur;
+save();
+renderWake();
+$('nowResult').innerHTML = '<p class="nap-out">いま（' + cur + '）布団に入る場合の起床候補</p>' + wakeCardsHTML(toMin(cur));
+$('nowResult').scrollIntoView({ behavior: 'smooth', block: 'nearest'});
+});
+
+// 昼寝モード
+document.querySelectorAll('.nap-btn').forEach((b) => {
+b.addEventListener('click', () => {
+const nap = Number(b.dataset.nap);
+const now = new Date();
+const start = now.getHours() * 60 + now.getMinutes();
+const wake = start + latency + nap;
+const wakeNorm = ((wake % 1440) + 1440) % 1440;
+$('napResult').innerHTML =
+'<p class="nap-out">' + nap + '分の仮眠なら、起きる目安は <span class="t" data-copy="' + fmt(wakeNorm) + '" title="タップでコピー">' + fmt(wakeNorm) + '頃</span> です</p>' +
+'<p class="copy-hint">（入眠' + latency + '分を含みます）時刻をタップするとコピーできます。</p>';
+});
+});
+
+// 時刻タップでコピー
+document.querySelectorAll('.tool-result').forEach((box) => {
+box.addEventListener('click', (e) => {
+const t = e.target.closest('[data-copy]');
+if (!t) return;
+const text = t.dataset.copy;
+const done = () => {
+const orig = t.innerHTML;
+t.innerHTML = 'コピーしました ✓';
+setTimeout(() => { t.innerHTML = orig;}, 1200);
+};
+if (navigator.clipboard && navigator.clipboard.writeText) {
+navigator.clipboard.writeText(text).then(done).catch(done);
+} else {
+done();
+}
+});
+});
+
+// 初期化：保存値の復元→描画
+try {
+const w = localStorage.getItem(LS.wake);
+const b = localStorage.getItem(LS.bed);
+const l = localStorage.getItem(LS.lat);
+if (w) wakeInput.value = w;
+if (b) bedInput.value = b;
+if (l && [10, 15, 20, 30].includes(Number(l))) latency = Number(l);
+} catch (e) { /* そのまま初期値で使う */}
+syncPills();
+renderAll();
 </script>
