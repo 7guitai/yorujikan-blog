@@ -193,6 +193,12 @@ TPEジェル素材を格子状に成形した枕で、頭の重さを分散し�
 <p>寝る前の首・肩ケアグッズおすすめ5選｜ストレッチポールからツボ押しまで悩み別に比較</p>
 </a>
 
+<a class="blogcard" href="/blog/pajama-material/">
+<img src="/images/pajama-material.jpg" alt="">
+<span>あわせて読みたい</span>
+<p>パジャマの素材おすすめ｜綿・ガーゼ・シルク・モダールを比較して快眠パジャマを選ぶ</p>
+</a>
+
 ## よくある質問
 
 <div class="faq">
