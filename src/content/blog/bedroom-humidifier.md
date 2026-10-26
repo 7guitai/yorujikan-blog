@@ -178,6 +178,12 @@ faq:
 
 あると便利です。湿度計を見ながら強弱を調整すると、結露やカビの防止に役立ちます。
 
+<a class="blogcard" href="/blog/bedroom-temperature-humidity/">
+<img src="/images/bedroom-temperature-humidity.jpg" alt="">
+<span>あわせて読みたい</span>
+<p>寝室の温度・湿度管理｜快眠のための室温・湿度の目安と季節別の整え方</p>
+</a>
+
 ## まとめ
 
 - 寝室用は「方式」「容量と連続時間」「静音性と明るさ」「お手入れ」「置き場所と安全機能」の5点で選ぶ
