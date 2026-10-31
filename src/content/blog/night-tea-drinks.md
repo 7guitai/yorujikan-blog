@@ -2,7 +2,7 @@
 title: "寝る前のお茶おすすめ5選｜ノンカフェインで眠りを邪魔しない選び方"
 description: "寝る前に飲みたいノンカフェインのお茶と、白湯を楽しむためのマグカップのおすすめ5選を比較。ハーブティーやルイボスティーの違い、香りや手軽さで選ぶポイント、飲むタイミングや量の注意点まで、眠りを邪魔しない夜の飲み物を丁寧に紹介します。"
 pubDate: 2026-10-24
-updatedDate: 2026-10-28
+updatedDate: 2026-10-31
 tags: ["ナイトルーティン", "ハーブティー", "ノンカフェイン", "買ってよかったもの"]
 heroImage: "/images/night-tea-drinks.jpg"
 draft: false
@@ -136,3 +136,9 @@ faq:
 </a>
 
 お茶を選んだら、次は淹れ方です。温度や蒸らし時間を少し変えるだけで、同じ茶葉でも香りや味わいがぐっと変わります。
+
+<a class="blogcard" href="/blog/night-caffeine-alcohol/">
+<img src="/images/night-caffeine-alcohol.jpg" alt="">
+<span>あわせて読みたい</span>
+<p>夜のカフェインとお酒｜眠りを浅くしない付き合い方</p>
+</a>
