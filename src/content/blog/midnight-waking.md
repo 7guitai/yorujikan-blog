@@ -2,6 +2,7 @@
 title: "夜中に目が覚めたときの対処法｜二度寝できない夜の過ごし方と再入眠のコツ"
 description: "夜中にふと目が覚めて、そこから眠れなくなった経験はありませんか。時計を見ない・明かりを強くしない・考え事を広げないなど、その場でできる対処法と、20分ルールを使った再入眠の手順、朝まで眠れないときの考え方までまとめました。"
 pubDate: 2026-10-30
+updatedDate: 2026-11-02
 tags: ["中途覚醒", "睡眠", "ハウツー", "夜中の過ごし方"]
 heroImage: "/images/midnight-waking.jpg"
 draft: false
@@ -186,3 +187,5 @@ faq:
 <span>あわせて読みたい</span>
 <p>ホワイトノイズマシンおすすめ5選｜音で眠りを整える選び方と使い方</p>
 </a>
+
+<a class="blogcard" href="/blog/night-toilet-sleep/"><img src="/images/night-toilet-sleep.jpg" alt=""><span>あわせて読みたい</span><p>夜中のトイレで目が覚める対策｜夜間頻尿で眠りが浅くなる原因とぐっすり眠る工夫</p></a>
