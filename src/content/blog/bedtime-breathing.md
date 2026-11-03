@@ -2,7 +2,7 @@
 title: "寝る前の呼吸法｜眠りにつきやすくする4つの呼吸のコツと実践手順"
 description: "布団に入っても頭が冴えて眠れない夜に。道具なしでベッドの中で始められる4-7-8呼吸・腹式呼吸・ボックス呼吸・1対2呼吸を、秒数と回数付きで具体的に解説。自分に合う方法の選び方や続け方、注意点まで丁寧にまとめました。"
 pubDate: 2026-10-29
-updatedDate: 2026-10-30
+updatedDate: 2026-11-03
 tags: ["呼吸法", "リラックス", "睡眠", "ハウツー"]
 heroImage: "/images/bedtime-breathing.jpg"
 draft: false
@@ -186,3 +186,5 @@ faq:
 <span>あわせて読みたい</span>
 <p>夜中に目が覚めたときの対処法｜二度寝できない夜の過ごし方と再入眠のコツ</p>
 </a>
+
+<a class="blogcard" href="/blog/bedtime-meditation/"><img src="/images/bedtime-meditation.jpg" alt=""><span>あわせて読みたい</span><p>寝る前の瞑想・マインドフルネス｜5分で頭を静めて眠りにつく方法</p></a>
