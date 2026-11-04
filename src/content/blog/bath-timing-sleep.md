@@ -2,6 +2,7 @@
 title: "お風呂に入るタイミングと睡眠｜寝つきをよくする入浴時間・温度・入り方のコツ"
 description: "寝つきをよくするお風呂の入り方を、タイミング・湯温・入浴時間の目安から解説します。就寝の90分前を目安にする理由、熱すぎるお湯や長湯の注意点、シャワーだけの日の工夫、入浴剤の選び方までまとめました。"
 pubDate: 2026-11-02
+updatedDate: 2026-11-04
 tags: ["入浴", "寝つき", "お風呂", "睡眠", "ハウツー"]
 heroImage: "/images/bath-timing-sleep.jpg"
 draft: false
@@ -190,3 +191,4 @@ faq:
 <a class="blogcard" href="/blog/bath-salts-guide/"><img src="/images/bath-salts-guide.jpg" alt=""><span>あわせて読みたい</span><p>入浴剤おすすめ5選｜寝る前のお風呂時間にほっと一息つく選び方</p></a>
 <a class="blogcard" href="/blog/bedtime-stretch/"><img src="/images/bedtime-stretch.jpg" alt=""><span>あわせて読みたい</span><p>寝る前ストレッチおすすめ｜ベッドの上でできる快眠ストレッチとほぐしグッズ</p></a>
 <a class="blogcard" href="/blog/night-caffeine-alcohol/"><img src="/images/night-caffeine-alcohol.jpg" alt=""><span>あわせて読みたい</span><p>夜のカフェインとお酒｜眠りを浅くしない付き合い方</p></a>
+<a class="blogcard" href="/blog/night-foot-bath/"><img src="/images/night-foot-bath.jpg" alt=""><span>あわせて読みたい</span><p>寝る前の足湯・手浴｜眠りにつきやすくする湯温・時間・やり方と注意点</p></a>
