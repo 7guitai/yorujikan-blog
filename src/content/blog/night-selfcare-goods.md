@@ -2,7 +2,7 @@
 title: "寝る前のセルフケアグッズおすすめ5選｜頭・香り・髪の悩み別に選び方を解説"
 description: "寝る前10分で使えるセルフケアグッズのおすすめ5選を、頭皮のコリ・香り・髪の乾燥といった悩み別に比較。選び方のポイントと注意点もあわせて解説します。"
 pubDate: 2026-10-24
-updatedDate: 2026-10-25
+updatedDate: 2026-11-05
 heroImage: "/images/night-selfcare-goods.jpg"
 tags: ["セルフケア", "快眠グッズ", "ナイトルーティン", "買ってよかったもの"]
 draft: false
@@ -98,6 +98,12 @@ faq:
 <img src="/images/aroma-diffuser.jpg" alt="">
 <span>あわせて読みたい</span>
 <p>アロマディフューザーおすすめ5選｜寝室の香りでリラックスして寝つきやすく</p>
+</a>
+
+<a class="blogcard" href="/blog/night-skincare/">
+<img src="/images/night-skincare.jpg" alt="">
+<span>あわせて読みたい</span>
+<p>寝る前のスキンケア完全ガイド｜夜の保湿ケアで朝の肌が変わる習慣とおすすめ5選</p>
 </a>
 
 ## よくある質問
