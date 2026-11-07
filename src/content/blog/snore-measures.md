@@ -2,6 +2,7 @@
 title: "いびき対策グッズと寝方｜自分・パートナーのいびきを減らす方法"
 description: "いびきが気になってぐっすり眠れない。原因別の対策（横向き寝、鼻づまりケア、寝室環境、パートナーへの配慮）と、試しやすいグッズの選び方をまとめました。症状が気になる場合の受診の目安も紹介します。"
 pubDate: 2026-11-03
+updatedDate: 2026-11-07
 tags: ["いびき", "睡眠", "寝方", "ハウツー"]
 heroImage: "/images/snore-measures.jpg"
 draft: false
@@ -143,6 +144,7 @@ MOLDEX（モルデックス）は、フォームタイプの使い捨て耳栓�
 
 いびき対策は、一夜で劇的に変わるものではありません。まずは今夜、横向き寝か鼻づまりケアのどちらかひとつだけ試してみてください。
 
+<a class="blogcard" href="/blog/couples-sleep/"><img src="/images/couples-sleep.jpg" alt=""><span>あわせて読みたい</span><p>パートナーとぐっすり眠る工夫｜いびき・寝相・温度差の悩みを減らす方法</p></a>
 <a class="blogcard" href="/blog/sleep-earplugs-mask/"><img src="/images/sleep-earplugs-mask.jpg" alt=""><span>あわせて読みたい</span><p>耳栓・アイマスクおすすめ5選</p></a>
 <a class="blogcard" href="/blog/midnight-waking/"><img src="/images/midnight-waking.jpg" alt=""><span>あわせて読みたい</span><p>夜中に目が覚めたときの対処法｜二度寝できない夜の過ごし方と再入眠のコツ</p></a>
 <a class="blogcard" href="/blog/bedroom-temperature-humidity/"><img src="/images/bedroom-temperature-humidity.jpg" alt=""><span>あわせて読みたい</span><p>寝室の温度・湿度管理｜快眠のための室温・湿度の目安と季節別の整え方</p></a>
