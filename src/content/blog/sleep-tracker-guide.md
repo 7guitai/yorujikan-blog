@@ -2,6 +2,7 @@
 title: "睡眠トラッカーの使い方｜睡眠の質を測って改善につなげる方法と見るべき指標"
 description: "睡眠トラッカーやスマートウォッチで測れる睡眠スコア・睡眠時間・深い眠り・心拍数の見方と、数値に振り回されずに記録を改善につなげる使い方、毎日の記録を無理なく続けるコツを、種類の選び方から寝る前の準備までわかりやすく紹介します。"
 pubDate: 2026-11-05
+updatedDate: 2026-11-08
 tags: ["睡眠トラッカー", "睡眠の質", "スマートウォッチ", "睡眠記録", "ハウツー"]
 heroImage: "/images/sleep-tracker-guide.jpg"
 draft: false
@@ -152,5 +153,6 @@ faq:
 
 今夜はまず、寝る前に通知をオフにして、充電のタイミングを決めておきましょう。
 
+<a class="blogcard" href="/blog/sleep-app-comparison/"><img src="/images/sleep-app-comparison.jpg" alt=""><span>あわせて読みたい</span><p>睡眠アプリおすすめ5選｜記録・目覚まし・いびき録音で選ぶ比較ガイド</p></a>
 <a class="blogcard" href="/blog/midnight-waking/"><img src="/images/midnight-waking.jpg" alt=""><span>あわせて読みたい</span><p>夜中に目が覚めたときの対処法｜20分ルールと二度寝のコツ</p></a>
 <a class="blogcard" href="/blog/morning-light-routine/"><img src="/images/morning-light-routine.jpg" alt=""><span>あわせて読みたい</span><p>朝の光と体内時計｜モーニングルーティンで目覚めを整える</p></a>
