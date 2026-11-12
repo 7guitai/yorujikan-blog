@@ -2,6 +2,7 @@
 title: "寝室の温度・湿度管理｜快眠のための室温・湿度の目安と季節別の整え方"
 description: "寝室が暑い・寒い・乾燥する・ジメジメする…。快眠のための室温・湿度の目安と、季節別の整え方、測り方、加湿・換気のコツ、結露やカビを防ぐ注意点まで、今日からできる方法をまとめました。"
 pubDate: 2026-10-26
+updatedDate: 2026-11-12
 tags: ["寝室", "温度", "湿度", "快眠環境", "季節の工夫"]
 heroImage: "/images/bedroom-temperature-humidity.jpg"
 draft: false
@@ -192,3 +193,5 @@ faq:
 - 眠れない状態や体調の不調が続く場合は、医療機関へ相談する
 
 温度と湿度の管理は、一度整えたら終わりではなく、季節とともに少しずつ変えていくものです。まずは湿度計を1台置いて、自分の寝室の「今」を測るところから始めてみてください。
+
+<a class="blogcard" href="/blog/sleep-environment-checklist/"><span class="blogcard__label">関連記事</span><span class="blogcard__title">寝室環境チェックリスト｜温度・湿度・光・音・寝具を一気に点検</span></a>
