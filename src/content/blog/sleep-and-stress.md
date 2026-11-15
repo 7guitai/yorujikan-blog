@@ -2,6 +2,7 @@
 title: "ストレスで眠れない夜に｜寝る前の不安・考え事を整理してぐっすり眠る方法"
 description: "布団に入っても不安や考え事が止まらず眠れない夜に。寝る前に頭の中を整理する対処法5つを、悩み別の早見表と具体的な手順つきで紹介します。今夜から5分で試せる、無理なく続けられるコツと注意点、よくある質問もまとめました。"
 pubDate: 2026-11-11
+updatedDate: 2026-11-15
 tags: ["睡眠", "ストレス", "夜の習慣"]
 heroImage: "/images/sleep-and-stress.jpg"
 draft: false
@@ -147,6 +148,8 @@ faq:
 ### どれくらい続ければ眠りやすくなりますか？
 
 感じ方には個人差があり、期間を断定することはできません。まずは1〜2週間、負担のない範囲で続けてみてください。合わないと感じたら、別の方法に切り替えてもかまいません。
+
+<a class="blogcard" href="/blog/night-sleep-and-mental-health/"><span class="blogcard__label">関連記事</span><span class="blogcard__title">睡眠と心の健康｜眠りと気分の関係と、寝る前の心の整え方</span></a>
 
 ## まとめ
 
