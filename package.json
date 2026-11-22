@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.6",
     "astro": "^5.18.2"
   },
   "name": "yorujikan-blog",
