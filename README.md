@@ -1,11 +1,12 @@
-# よるじかん（SEOブログ）
+# リピ買い図鑑（アフィリエイト比較サイト）
 
-「よるじかん｜電源オフの暮らしと快眠道具」の公式ブログ。Astro製の静的サイトです。
-note（体験談寄りの連載）と役割を分け、こちらは検索から調べに来る方向けに、比較・選び方中心の記事を蓄積します。
+「リピ買い図鑑｜売れ筋の数字で選ぶ消耗品・リピート品の比較サイト」。Astro製の静的サイトです。
+楽天・Amazonの売れ筋ランキング順位、レビュー件数、単価などの数字をもとに、消耗品・リピート品の比較記事を蓄積します。記事は体験談ではなく、スペック・価格・レビュー傾向の比較が中心です。
 
-- サイトの仮URL: https://yorujikan-blog.pages.dev （`astro.config.mjs` の `site` で管理）
+- サイトの仮URL: https://ripigai-zukan.pages.dev （`astro.config.mjs` の `site` で管理）
 - 記事は `src/content/blog/` の Markdown ファイル
-- フッターと「このブログについて」に、Amazonアソシエイト参加の表記を入れています
+- フッターと運営者情報に、Amazonアソシエイト・楽天アフィリエイト参加の表記を入れています
+- 記事ページのタイトル直下に、PR・生成AI活用の開示文が自動表示されます（`src/pages/blog/[slug].astro`）
 
 ## 運用手順（記事の公開まで）
 
@@ -29,7 +30,8 @@ npm run build # 本番ビルド（dist/ に出力）
 title: "記事タイトル"
 description: "検索結果に表示される要約。100〜120字程度"
 pubDate: 2026-10-24
-tags: ["セルフケア", "快眠グッズ"]
+category: "食品・飲料"
+tags: ["冷凍食品", "ストック"]
 draft: false
 ---
 ```
@@ -40,6 +42,7 @@ draft: false
 | description | ○ | メタディスクリプション兼一覧ページの要約 |
 | pubDate | ○ | 公開日（YYYY-MM-DD） |
 | updatedDate | - | 更新日（任意） |
+| category | ○ | カテゴリー（「食品・飲料」「コスメ・美容」「日用品・キッチン」「ペット用品」「ベビー」のいずれか） |
 | tags | - | タグの配列。省略時は空 |
 | draft | - | `true` にするとビルド対象から外れる（下書き）。省略時は `false` |
 
@@ -60,8 +63,11 @@ draft: false
 │   ├── content/blog/       # 記事 Markdown
 │   ├── layouts/Base.astro  # 共通レイアウト（SEOメタ・ヘッダー・フッター）
 │   └── pages/
-│       ├── index.astro         # 記事一覧
-│       ├── about.astro         # このブログについて
+│       ├── index.astro         # トップページ（カテゴリー一覧＋最新記事）
+│       ├── about.astro         # 運営者情報
+│       ├── privacy.astro       # プライバシーポリシー
+│       ├── disclaimer.astro    # 免責事項
+│       ├── categories/[category].astro # カテゴリー別記事一覧
 │       └── blog/[slug].astro   # 記事ページ
 └── package.json
 ```

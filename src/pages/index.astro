@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const withBase = (path: string | undefined) => (path && path.startsWith('/') ? `${base}${path.slice(1)}` : path);
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
@@ -9,15 +11,14 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 const featured = posts[0];
 const restPosts = posts.slice(1);
 
-// 全タグ（記事数の多い順、同数なら名前順）
-const tagCounts = new Map<string, number>();
+// カテゴリー（固定5分類＋件数）
+const CATEGORIES = ['食品・飲料', 'コスメ・美容', '日用品・キッチン', 'ペット用品', 'ベビー'];
+const categoryCounts = new Map<string, number>();
 for (const post of posts) {
-  for (const tag of post.data.tags) {
-    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
-  }
+  categoryCounts.set(post.data.category, (categoryCounts.get(post.data.category) ?? 0) + 1);
 }
-const allTags = [...tagCounts.entries()].sort(
-  (a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ja'),
+const categories = CATEGORIES.map(
+  (category) => [category, categoryCounts.get(category) ?? 0] as [string, number],
 );
 
 const formatDate = (d: Date) =>
@@ -25,31 +26,40 @@ const formatDate = (d: Date) =>
 ---
 
 <Base
-  title="よるじかん｜電源オフの暮らしと快眠道具"
-  description="寝る前のセルフケアや快眠グッズを、選び方と比較とあわせて紹介する個人ブログ「よるじかん」の記事一覧です。"
+  title="リピ買い図鑑｜売れ筋の数字で選ぶ消耗品・リピート品の比較サイト"
+  description="楽天・Amazonの売れ筋ランキング順位、レビュー件数、単価などの数字をもとに、食品・飲料、コスメ・美容、日用品・キッチン、ペット用品、ベビー用品の消耗品・リピート品を比較するサイト「リピ買い図鑑」です。"
 >
   <div class="page-head">
-    <h1>よるじかん</h1>
-    <p class="lead">寝る前の時間を整えるセルフケアグッズ・快眠道具を、選び方と比較とあわせて紹介しています。</p>
+    <h1>リピ買い図鑑</h1>
+    <p class="lead">売れ筋の数字（ランキング順位・レビュー件数・単価）で選ぶ、消耗品・リピート品の比較サイトです。食品・飲料、コスメ・美容、日用品・キッチン、ペット用品、ベビー用品を中心に、スペック・価格・購入者レビューの傾向をもとに比較しています。</p>
   </div>
+
+  <section>
+    <h2 class="sec-title">カテゴリーから探す</h2>
+    <ul class="tag-chips">
+      {categories.map(([category, count]) => (
+        <li>
+          <a class="tag-chip" href={`${base}categories/${category}/`}>{category}<span class="tag-count">{count}</span></a>
+        </li>
+      ))}
+    </ul>
+  </section>
 
   {featured && (
     <section>
       <h2 class="sec-title">おすすめ記事</h2>
-      <a class="featured-card" href={`/blog/${featured.id}/`}>
+      <a class="featured-card" href={`${base}blog/${featured.id}/`}>
         <span class="featured-thumb">
           {featured.data.heroImage ? (
-            <img src={featured.data.heroImage} alt="" />
+            <img src={withBase(featured.data.heroImage)} alt="" />
           ) : (
-            <span class="featured-thumb-empty">☾</span>
+            <span class="featured-thumb-empty">↻</span>
           )}
           <span class="featured-badge">最新記事</span>
         </span>
         <span class="featured-body">
           <span class="featured-meta">
-            {featured.data.tags[0] && (
-              <span class="cat-label">{featured.data.tags[0]}</span>
-            )}
+            <span class="cat-label">{featured.data.category}</span>
             <time datetime={featured.data.pubDate.toISOString()}>
               {formatDate(featured.data.pubDate)}
             </time>
@@ -63,106 +73,114 @@ const formatDate = (d: Date) =>
   )}
 
   <section>
-    <h2 class="sec-title">タグから探す</h2>
-    <ul class="tag-chips">
-      {allTags.map(([tag, count]) => (
-        <li>
-          <a class="tag-chip" href={`/tags/${tag}/`}>{tag}<span class="tag-count">{count}</span></a>
-        </li>
-      ))}
-    </ul>
-  </section>
-
-  <section>
-    <h2 class="sec-title">記事一覧</h2>
-    <ul class="post-grid">
-      {restPosts.map((post, i) => (
-        <li class="post-card">
-          <a href={`/blog/${post.id}/`} class="post-card__thumb">
-            {post.data.heroImage ? (
-              <img src={post.data.heroImage} alt="" loading="lazy" />
-            ) : (
-              <span class={`post-card__thumb-empty c${(i % 4) + 1}`}>☾</span>
-            )}
-          </a>
-          <div class="post-card__body">
-            <div class="post-card__meta">
-              {post.data.tags[0] && (
-                <span class="cat-label">{post.data.tags[0]}</span>
+    <h2 class="sec-title">最新記事</h2>
+    {restPosts.length > 0 ? (
+      <ul class="post-grid">
+        {restPosts.map((post, i) => (
+          <li class="post-card">
+            <a href={`${base}blog/${post.id}/`} class="post-card__thumb">
+              {post.data.heroImage ? (
+                <img src={withBase(post.data.heroImage)} alt="" loading="lazy" />
+              ) : (
+                <span class={`post-card__thumb-empty c${(i % 4) + 1}`}>↻</span>
               )}
-              <time datetime={post.data.pubDate.toISOString()}>
-                {formatDate(post.data.pubDate)}
-              </time>
+            </a>
+            <div class="post-card__body">
+              <div class="post-card__meta">
+                <span class="cat-label">{post.data.category}</span>
+                <time datetime={post.data.pubDate.toISOString()}>
+                  {formatDate(post.data.pubDate)}
+                </time>
+              </div>
+              <a href={`${base}blog/${post.id}/`} class="post-card__title">{post.data.title}</a>
+              <p class="post-card__desc">{post.data.description}</p>
             </div>
-            <a href={`/blog/${post.id}/`} class="post-card__title">{post.data.title}</a>
-            <p class="post-card__desc">{post.data.description}</p>
-          </div>
-        </li>
-      ))}
-    </ul>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty-note">記事は準備中です。これから順次公開していきます。</p>
+    )}
   </section>
   <style>
     .page-head {
       background: var(--white);
       border-radius: var(--radius);
+      border-left: 6px solid var(--main);
+      box-shadow: 0 1px 3px rgba(22, 50, 79, .07);
       padding: 28px 32px;
       margin-bottom: 32px;
     }
-    .page-head h1 { font-size: 24px; margin: 0 0 8px; line-height: 1.5; }
+    .page-head h1 {
+      font-family: var(--font-head); font-size: 24px; font-weight: 900;
+      color: var(--navy); margin: 0 0 8px; line-height: 1.5;
+    }
     .lead { color: #555; margin: 0; font-size: 15px; }
     .sec-title {
-      font-size: 18px; margin: 36px 0 16px; padding-bottom: 8px;
-      border-bottom: 2px solid var(--main);
+      font-family: var(--font-head);
+      font-size: 19px; font-weight: 900; color: var(--navy);
+      margin: 36px 0 16px; padding: 0 0 8px 14px; position: relative;
+      border-bottom: 2px solid var(--border);
+    }
+    .sec-title::before {
+      content: ""; position: absolute; left: 0; top: 2px; bottom: 10px;
+      width: 5px; border-radius: 3px; background: var(--main);
     }
     section:first-of-type .sec-title { margin-top: 0; }
+    .empty-note {
+      background: var(--white); border-radius: var(--radius);
+      padding: 28px 32px; color: #555; font-size: 15px; margin: 0;
+    }
 
     /* ---------- おすすめ記事（特集） ---------- */
     .featured-card {
       display: flex; background: var(--white); border-radius: var(--radius);
-      overflow: hidden; color: var(--text); box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+      border-top: 4px solid var(--main);
+      overflow: hidden; color: var(--text);
+      box-shadow: 0 2px 8px rgba(22, 50, 79, .1);
       transition: .2s;
     }
-    .featured-card:hover { opacity: 1; box-shadow: 0 4px 14px rgba(0, 0, 0, .1); }
+    .featured-card:hover { opacity: 1; box-shadow: 0 8px 22px rgba(22, 50, 79, .16); transform: translateY(-2px); }
     .featured-thumb {
       position: relative; flex: 0 0 52%; aspect-ratio: 16 / 9;
-      overflow: hidden; background: var(--main-light); display: block;
+      overflow: hidden; background: var(--navy-light); display: block;
     }
     .featured-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .featured-thumb-empty {
       width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-      font-size: 3rem; color: var(--main);
-      background: linear-gradient(135deg, #8fb9a8, var(--main)); color: #fff;
+      font-size: 3rem;
+      background: linear-gradient(135deg, #ff8a5c, var(--main)); color: #fff;
     }
     .featured-badge {
       position: absolute; top: 12px; left: 12px;
-      background: var(--accent); color: #fff;
-      font-size: 12px; font-weight: 700; padding: 2px 12px; border-radius: 3px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+      background: var(--main); color: #fff;
+      font-size: 12px; font-weight: 700; padding: 3px 14px; border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
     }
     .featured-body {
       flex: 1; min-width: 0; padding: 20px 24px;
       display: flex; flex-direction: column; gap: 10px; justify-content: center;
     }
     .featured-meta { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-sub); }
-    .featured-title { font-size: 19px; font-weight: 700; line-height: 1.55; }
+    .featured-title { font-family: var(--font-head); font-size: 19px; font-weight: 900; line-height: 1.55; }
     .featured-card:hover .featured-title { color: var(--main); }
     .featured-desc {
       font-size: 13.5px; color: #555; line-height: 1.75; margin: 0;
       display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
     }
-    .featured-more { color: var(--accent); font-weight: 700; font-size: 14px; }
+    .featured-more { color: var(--main); font-weight: 700; font-size: 14px; }
 
-    /* ---------- タグチップ ---------- */
+    /* ---------- カテゴリーチップ ---------- */
     .tag-chips { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
     .tag-chip {
       display: inline-flex; align-items: center; gap: 7px;
       background: var(--white); color: var(--text);
       border: 1px solid var(--border); border-radius: 999px;
-      padding: 4px 14px; font-size: 13.5px; transition: .15s;
+      padding: 4px 14px; font-size: 13.5px; font-weight: 500; transition: .15s;
     }
-    .tag-chip:hover { border-color: var(--main); color: var(--main); opacity: 1; }
+    .tag-chip:hover { border-color: var(--navy); color: var(--navy); opacity: 1; }
     .tag-count {
-      background: var(--main-light); color: var(--main);
+      background: var(--main); color: #fff;
       border-radius: 999px; padding: 0 7px; font-size: 11px; line-height: 1.8; font-weight: 700;
     }
 
@@ -173,11 +191,11 @@ const formatDate = (d: Date) =>
     }
     .post-card {
       background: var(--white); border-radius: var(--radius); overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, .06); display: flex; flex-direction: column;
+      box-shadow: 0 1px 4px rgba(22, 50, 79, .08); display: flex; flex-direction: column;
       transition: .2s;
     }
-    .post-card:hover { box-shadow: 0 4px 14px rgba(0, 0, 0, .1); }
-    .post-card__thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: var(--main-light); }
+    .post-card:hover { box-shadow: 0 8px 20px rgba(22, 50, 79, .14); transform: translateY(-3px); }
+    .post-card__thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: var(--navy-light); }
     .post-card__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: .2s; }
     .post-card:hover .post-card__thumb img { opacity: .88; }
     .post-card__thumb-empty {
@@ -199,6 +217,8 @@ const formatDate = (d: Date) =>
       .featured-title { font-size: 17px; }
       .post-grid { grid-template-columns: 1fr; }
       .page-head { padding: 22px 18px; }
+      .empty-note { padding: 22px 18px; }
     }
+
   </style>
 </Base>

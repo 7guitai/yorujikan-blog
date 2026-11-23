@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import type { MarkdownHeading } from 'astro';
 import Sidebar from '../components/Sidebar.astro';
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 
 interface Props {
   title: string;
@@ -10,23 +11,14 @@ interface Props {
 }
 
 const { title, description, toc = [] } = Astro.props;
-const siteName = 'よるじかん｜電源オフの暮らしと快眠道具';
+const siteName = 'リピ買い図鑑｜売れ筋の数字で選ぶ消耗品・リピート品の比較サイト';
 const pageTitle = title === siteName ? title : `${title}｜${siteName}`;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL('/ogp.png', Astro.site);
+const ogImage = new URL(`${base}ogp.png`, Astro.site);
 
-// グローバルナビ用: 記事数の多いタグ上位4件
-const navPosts = await getCollection('blog', ({ data }) => !data.draft);
-const navTagCounts = new Map<string, number>();
-for (const post of navPosts) {
-  for (const tag of post.data.tags) {
-    navTagCounts.set(tag, (navTagCounts.get(tag) ?? 0) + 1);
-  }
-}
-const navTags = [...navTagCounts.entries()]
-  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ja'))
-  .slice(0, 4)
-  .map(([tag]) => tag);
+// グローバルナビ用: カテゴリー（固定5分類）
+const CATEGORIES = ['食品・飲料', 'コスメ・美容', '日用品・キッチン', 'ペット用品', 'ベビー'];
+const navCategories = CATEGORIES;
 
 const hasBreadcrumb = await Astro.slots.has('breadcrumb');
 ---
@@ -40,7 +32,6 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
-    <meta name="google-site-verification" content="n4sVIMCNLli36HHN4-dtuNoeEnew3wVhhdkAGhvDfZo" />
     <!-- OGP -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={siteName} />
@@ -52,29 +43,37 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap"
       rel="stylesheet"
     />
     <slot name="head" />
     <style is:global>
       /* =========================================================
-         よるじかん - テンプレートのデザイントークンを移植
+         リピ買い図鑑 - 新デザイン（2026-11刷新）
+         白ベース × バーミリオン × ネイビーの「お得・セール」系
          ========================================================= */
       :root {
-        --main: #2f6f5e;
-        --main-light: #e9f3ef;
-        --accent: #e8833a;
-        --text: #333;
-        --text-sub: #777;
-        --bg: #f7f7f5;
+        --main: #e6361f;
+        --main-dark: #c22712;
+        --main-bright: #ff5a3c;
+        --main-light: #fdeeea;
+        --navy: #16324f;
+        --navy-deep: #0e2233;
+        --navy-light: #e9eff5;
+        --sale: #f5a300;
+        --sale-light: #fff6df;
+        --text: #22262b;
+        --text-sub: #68707c;
+        --bg: #f5f6f8;
         --white: #fff;
-        --border: #e3e3e0;
-        --radius: 6px;
+        --border: #e2e6ea;
+        --radius: 12px;
         --container: 1200px;
+        --font-head: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
       }
 
       *, *::before, *::after { box-sizing: border-box; }
@@ -93,15 +92,16 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       img { max-width: 100%; height: auto; vertical-align: bottom; }
       ul, ol { padding-left: 1.5em; }
       button { font: inherit; cursor: pointer; }
-      ::selection { background: var(--main-light); }
+      ::selection { background: #ffd9d2; }
+      h1, h2, h3 { font-family: var(--font-head); }
 
       .l-container { max-width: var(--container); margin: 0 auto; padding: 0 16px; }
 
-      /* ---------- Header ---------- */
+      /* ---------- Header（ネイビー地） ---------- */
       .l-header {
-        background: var(--white);
+        background: var(--navy);
         border-top: 4px solid var(--main);
-        box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+        box-shadow: 0 2px 8px rgba(14, 34, 51, .25);
         position: relative;
         z-index: 50;
       }
@@ -109,29 +109,36 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
         display: flex; align-items: center; justify-content: center;
         height: 84px; position: relative;
       }
-      .site-logo { font-size: 26px; font-weight: 700; color: var(--text); text-align: center; line-height: 1.3; }
-      .site-logo:hover { opacity: 1; color: var(--main); }
+      .site-logo {
+        font-family: var(--font-head);
+        font-size: 28px; font-weight: 900; color: #fff; text-align: center;
+        line-height: 1.3; letter-spacing: .04em;
+      }
+      .site-logo:hover { opacity: 1; color: #fff; }
+      .site-logo .logo-accent { color: var(--main-bright); }
       .site-logo small {
-        display: block; font-size: 11px; font-weight: 400;
-        color: var(--text-sub); letter-spacing: .05em;
+        display: block; font-size: 11px; font-weight: 500;
+        font-family: "Noto Sans JP", sans-serif;
+        color: #a9bccd; letter-spacing: .08em;
       }
       .menu-btn, .search-btn {
         position: absolute; top: 50%; transform: translateY(-50%);
-        background: none; border: none; color: var(--text); display: none; padding: 8px;
+        background: none; border: none; color: #fff; display: none; padding: 8px;
       }
       .menu-btn { left: 8px; width: 40px; height: 40px; flex-direction: column; justify-content: center; gap: 5px; }
       .menu-btn span { display: block; height: 2px; background: currentColor; width: 22px; margin: 0 auto; transition: .3s; }
       .search-btn { right: 8px; }
 
-      .g-nav { border-top: 1px solid var(--border); }
+      .g-nav { border-top: 1px solid rgba(255, 255, 255, .16); }
       .g-nav__list { display: flex; justify-content: center; flex-wrap: wrap; list-style: none; margin: 0 auto; padding: 0; }
       .g-nav__list a {
-        display: block; padding: 12px 20px; color: var(--text);
-        font-size: 14px; font-weight: 500; position: relative;
+        display: block; padding: 12px 20px; color: #fff;
+        font-size: 14px; font-weight: 700; position: relative;
       }
       .g-nav__list a::after {
-        content: ""; position: absolute; left: 50%; bottom: 6px; width: 0; height: 2px;
-        background: var(--main); transition: .25s; transform: translateX(-50%);
+        content: ""; position: absolute; left: 50%; bottom: 6px; width: 0; height: 3px;
+        background: var(--main-bright); transition: .25s; transform: translateX(-50%);
+        border-radius: 2px;
       }
       .g-nav__list a:hover { opacity: 1; }
       .g-nav__list a:hover::after { width: 60%; }
@@ -154,15 +161,23 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       .l-main { min-width: 0; }
 
       /* ---------- Post head ---------- */
-      .post { background: var(--white); border-radius: var(--radius); padding: 40px 48px; }
-      .post-title { font-size: 26px; line-height: 1.5; margin: 0 0 16px; }
+      .post {
+        background: var(--white); border-radius: var(--radius);
+        padding: 40px 48px;
+        box-shadow: 0 1px 3px rgba(22, 50, 79, .07);
+      }
+      .post-title {
+        font-family: var(--font-head);
+        font-size: 27px; font-weight: 900; line-height: 1.5;
+        margin: 0 0 16px; color: var(--navy);
+      }
       .post-meta {
         display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
         margin-bottom: 20px; font-size: 13px; color: var(--text-sub);
       }
       .cat-label {
-        background: var(--main); color: #fff; padding: 2px 12px;
-        border-radius: 3px; font-size: 12px;
+        background: var(--navy); color: #fff; padding: 2px 14px;
+        border-radius: 999px; font-size: 12px; font-weight: 700;
       }
       a.cat-label:hover { opacity: .85; color: #fff; }
       .date { display: inline-flex; align-items: center; gap: 4px; }
@@ -173,46 +188,46 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       .post-content > * { margin-top: 0; margin-bottom: 1.8em; }
       .post-content p { margin-top: 0; }
       .post-content h2 {
-        font-size: 22px; line-height: 1.5; background: var(--main); color: #fff;
-        padding: 14px 20px; border-radius: 4px; margin: 2.6em 0 1.2em; position: relative;
-      }
-      .post-content h2::before {
-        content: ""; position: absolute; left: 24px; bottom: -10px;
-        border: 10px solid transparent; border-top-color: var(--main); border-bottom: 0;
+        font-size: 22px; font-weight: 900; line-height: 1.5;
+        background: var(--navy); color: #fff;
+        padding: 14px 20px; border-radius: 8px 8px 0 0;
+        border-bottom: 4px solid var(--main);
+        margin: 2.6em 0 1.2em; position: relative;
       }
       .post-content h3 {
-        font-size: 19px; line-height: 1.5; padding: 4px 0 8px 16px;
-        border-left: 5px solid var(--main); border-bottom: 1px solid var(--border);
+        font-size: 19px; font-weight: 700; line-height: 1.5;
+        padding: 4px 0 8px 16px; color: var(--navy);
+        border-left: 6px solid var(--main); border-bottom: 1px solid var(--border);
         margin: 2.2em 0 1em;
       }
       .post-content h4 { font-size: 17px; margin: 1.8em 0 .8em; }
       .post-content h4::before { content: "■"; color: var(--main); margin-right: .4em; }
       .post-content .marker, .marker {
-        background: linear-gradient(transparent 60%, #ffe3a3 60%); font-weight: 700;
+        background: linear-gradient(transparent 60%, #ffe08a 60%); font-weight: 700;
       }
       .post-content .caption, .caption { font-size: 12px; color: var(--text-sub); margin-top: -1.2em !important; }
       .post-content img { border-radius: var(--radius); }
       .post-content blockquote {
         margin: 0 0 1.8em; padding: 14px 18px;
-        background: #f4f4f2; border-left: 5px solid var(--main);
+        background: #f2f6fa; border-left: 5px solid var(--navy);
         border-radius: 0 var(--radius) var(--radius) 0; color: #555;
       }
       .post-content blockquote p:last-child { margin-bottom: 0; }
       .post-content code {
-        background: #f0f0ee; border-radius: 4px; padding: .1em .4em; font-size: .9em;
+        background: #eef1f4; border-radius: 4px; padding: .1em .4em; font-size: .9em;
       }
       .post-content hr { border: none; border-top: 1px solid var(--border); }
 
       .pr-note {
-        font-size: 13px; background: #f4f4f2; border: 1px solid var(--border);
-        border-radius: var(--radius); padding: 12px 16px; color: #555;
+        font-size: 13px; background: var(--sale-light); border: 1px solid #eed9a0;
+        border-radius: var(--radius); padding: 12px 16px; color: #5c4a12;
       }
 
       /* ---------- TOC ---------- */
-      .toc { border: 2px solid var(--main); border-radius: var(--radius); padding: 0; overflow: hidden; }
+      .toc { border: 2px solid var(--navy); border-radius: var(--radius); padding: 0; overflow: hidden; }
       .toc__head {
         display: flex; justify-content: space-between; align-items: center;
-        background: var(--main-light); padding: 10px 16px; font-weight: 700;
+        background: var(--navy-light); padding: 10px 16px; font-weight: 700; color: var(--navy);
       }
       .toc__head span::before { content: "☰"; margin-right: .5em; color: var(--main); }
       .toc__toggle {
@@ -234,23 +249,23 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       .box__label { display: block; font-weight: 700; margin-bottom: 4px; }
       .box--point { border: 2px solid var(--main); background: #fff; }
       .box--point .box__title { color: var(--main); }
-      .box--info { background: #eef5fb; border-left: 5px solid #4a8fc9; }
-      .box--alert { background: #fdf1f0; border-left: 5px solid #d9534f; }
-      .box--check { background: #fff8ec; border: 1px dashed var(--accent); }
+      .box--info { background: #eef5fb; border-left: 5px solid #2f6fb2; }
+      .box--alert { background: var(--main-light); border-left: 5px solid var(--main); }
+      .box--check { background: #fff8ec; border: 1px dashed var(--sale); }
 
       .merit-demerit { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-      .merit, .demerit { border-radius: 4px; padding: 12px 14px; }
-      .merit { background: #eef7f1; }
-      .demerit { background: #fbefef; }
+      .merit, .demerit { border-radius: 8px; padding: 12px 14px; }
+      .merit { background: #eafaf0; }
+      .demerit { background: var(--main-light); }
       .md-head { font-weight: 700; margin: 0 0 6px !important; }
-      .merit .md-head { color: #2e8b57; }
-      .demerit .md-head { color: #c0392b; }
+      .merit .md-head { color: #1e9e6a; }
+      .demerit .md-head { color: var(--main-dark); }
       .merit ul, .demerit ul { margin: 0; }
 
       .list-check, .list-x { list-style: none; padding-left: 0; }
       .list-check li, .list-x li { padding-left: 1.6em; position: relative; margin: .3em 0; }
-      .list-check li::before { content: "✓"; position: absolute; left: 0; color: #2e8b57; font-weight: 700; }
-      .list-x li::before { content: "✕"; position: absolute; left: 0; color: #c0392b; font-weight: 700; }
+      .list-check li::before { content: "✓"; position: absolute; left: 0; color: #1e9e6a; font-weight: 700; }
+      .list-x li::before { content: "✕"; position: absolute; left: 0; color: var(--main); font-weight: 700; }
       .list-num { margin: 0; padding-left: 1.4em; }
       .list-num li { margin: .4em 0; }
 
@@ -273,15 +288,15 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       .balloon__text::before { left: -19px; border-right-color: var(--border); }
       .balloon__text::after { left: -15px; border-right-color: var(--white); }
 
-      /* ---------- Table（Markdown表は .compare 風に） ---------- */
+      /* ---------- Table ---------- */
       .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
       .compare { width: 100%; min-width: 520px; border-collapse: collapse; font-size: 14px; line-height: 1.6; }
       .compare th, .compare td { border: 1px solid var(--border); padding: 10px 12px; text-align: center; }
-      .compare thead th { background: #555; color: #fff; }
-      .compare tbody th { background: #f4f4f2; text-align: left; white-space: nowrap; }
+      .compare thead th { background: var(--navy); color: #fff; }
+      .compare tbody th { background: #f2f5f8; text-align: left; white-space: nowrap; }
       .compare thead th.is-main { background: var(--main); }
       .compare td.is-main { background: var(--main-light); }
-      .mark-o { color: #d9534f; font-weight: 700; font-size: 1.1em; }
+      .mark-o { color: var(--main); font-weight: 700; font-size: 1.1em; }
       .mark-t { color: #e0a100; font-weight: 700; }
       .mark-x { color: #999; font-weight: 700; }
 
@@ -292,29 +307,29 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       .post-content th, .post-content td {
         border: 1px solid var(--border); padding: 10px 12px; text-align: left;
       }
-      .post-content thead th { background: #555; color: #fff; text-align: center; white-space: nowrap; }
-      .post-content tbody th { background: #f4f4f2; white-space: nowrap; }
+      .post-content thead th { background: var(--navy); color: #fff; text-align: center; white-space: nowrap; }
+      .post-content tbody th { background: #f2f5f8; white-space: nowrap; }
       .post-content tbody td { background: #fff; }
 
-      /* ---------- Product box ---------- */
+      /* ---------- Product box（記事内の旧来ボックス） ---------- */
       .product-box {
         display: flex; gap: 20px; border: 1px solid var(--border); border-radius: var(--radius);
-        padding: 20px; box-shadow: 0 2px 6px rgba(0, 0, 0, .05); background: #fff;
+        padding: 20px; box-shadow: 0 2px 6px rgba(22, 50, 79, .07); background: #fff;
       }
       .product-box__img { width: 150px; flex-shrink: 0; }
       .product-box__dummy {
-        aspect-ratio: 1; background: #f0f0ee; border-radius: 4px;
+        aspect-ratio: 1; background: #f0f0ee; border-radius: 8px;
         display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 13px;
       }
       .product-box__body { flex: 1; min-width: 0; }
       .product-box__name { font-weight: 700; line-height: 1.5; margin: 0 0 4px !important; }
       .product-box__brand { font-size: 12px; color: var(--text-sub); margin: 0 !important; }
-      .product-box__price { font-weight: 700; color: #c0392b; margin: 6px 0 12px !important; }
+      .product-box__price { font-weight: 700; color: var(--main); margin: 6px 0 12px !important; }
       .product-box__price small { font-weight: 400; color: var(--text-sub); font-size: 11px; }
       .product-box__btns { display: flex; gap: 8px; flex-wrap: wrap; }
       .shop-btn {
         flex: 1; min-width: 90px; text-align: center; color: #fff !important; font-weight: 700;
-        font-size: 14px; padding: 9px 6px; border-radius: 4px; box-shadow: 0 3px 0 rgba(0, 0, 0, .15);
+        font-size: 14px; padding: 9px 6px; border-radius: 999px; box-shadow: 0 3px 0 rgba(0, 0, 0, .15);
       }
       .shop-btn--a { background: #f79901; }
       .shop-btn--r { background: #bf0000; }
@@ -324,7 +339,7 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       .faq details { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
       .faq summary {
         list-style: none; cursor: pointer; padding: 14px 44px 14px 48px;
-        font-weight: 700; position: relative; background: #fafaf8;
+        font-weight: 700; position: relative; background: #fafbfc;
       }
       .faq summary::-webkit-details-marker { display: none; }
       .faq summary::before {
@@ -339,7 +354,7 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       .faq__a { padding: 14px 18px 14px 48px; position: relative; border-top: 1px dashed var(--border); }
       .faq__a::before {
         content: "A"; position: absolute; left: 16px; top: 12px;
-        color: var(--accent); font-size: 18px; font-weight: 700;
+        color: var(--navy); font-size: 18px; font-weight: 700;
       }
 
       /* ---------- Blog card / CTA ---------- */
@@ -347,23 +362,24 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
         display: flex; gap: 14px; border: 1px solid var(--border); border-radius: var(--radius);
         padding: 12px; color: var(--text) !important; transition: .2s; background: #fff;
       }
-      .blogcard:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, .08); opacity: 1; }
+      .blogcard:hover { box-shadow: 0 4px 12px rgba(22, 50, 79, .12); opacity: 1; }
       .blogcard__thumb {
-        width: 140px; aspect-ratio: 16/9; flex-shrink: 0; border-radius: 4px;
-        background: linear-gradient(135deg, #6aa892, var(--main)); overflow: hidden;
+        width: 140px; aspect-ratio: 16/9; flex-shrink: 0; border-radius: 8px;
+        background: linear-gradient(135deg, #ff8a5c, var(--main)); overflow: hidden;
       }
       .blogcard__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
       .blogcard__label {
-        display: inline-block; font-size: 11px; background: var(--main);
+        display: inline-block; font-size: 11px; background: var(--navy);
         color: #fff; padding: 0 8px; border-radius: 2px;
       }
       .blogcard__title { font-weight: 700; line-height: 1.5; margin: 4px 0 0 !important; font-size: 15px; }
       .cta-btn {
         display: block; max-width: 420px; margin: 0 auto 2em; text-align: center;
-        background: var(--accent); color: #fff !important; font-weight: 700; padding: 16px;
-        border-radius: 40px; box-shadow: 0 4px 0 #b85f20; transition: .15s;
+        background: linear-gradient(180deg, #f0442a, var(--main-dark)); color: #fff !important;
+        font-weight: 700; padding: 16px;
+        border-radius: 40px; box-shadow: 0 4px 0 #8f1d0c; transition: .15s;
       }
-      .cta-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #b85f20; opacity: 1; }
+      .cta-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #8f1d0c; opacity: 1; }
       .cta-btn::after { content: " ›"; }
 
       /* ---------- 本文中のAmazonリンク（オレンジ系ピルボタン） ---------- */
@@ -390,7 +406,7 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       }
       .sns {
         display: flex; align-items: center; justify-content: center;
-        width: 64px; height: 40px; border-radius: 4px; color: #fff !important;
+        width: 64px; height: 40px; border-radius: 8px; color: #fff !important;
         font-weight: 700; font-size: 14px; border: none;
       }
       .sns--x { background: #000; }
@@ -413,10 +429,14 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       .pn--next span::after { content: " ›"; }
 
       /* ---------- Author / Related ---------- */
-      .section-title { font-size: 18px; text-align: center; margin: 0 0 20px; position: relative; }
+      .section-title {
+        font-family: var(--font-head);
+        font-size: 19px; font-weight: 900; text-align: center;
+        margin: 0 0 20px; position: relative; color: var(--navy);
+      }
       .section-title::after {
-        content: ""; display: block; width: 40px; height: 3px;
-        background: var(--main); margin: 8px auto 0;
+        content: ""; display: block; width: 44px; height: 4px;
+        background: var(--main); margin: 8px auto 0; border-radius: 2px;
       }
       .author { margin-bottom: 40px; }
       .author__inner {
@@ -429,28 +449,33 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       .card-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
       .card-list a { color: var(--text); display: block; }
       .card-thumb {
-        aspect-ratio: 16/9; border-radius: 4px; margin-bottom: 8px;
+        aspect-ratio: 16/9; border-radius: 8px; margin-bottom: 8px;
         transition: .2s; overflow: hidden;
       }
       .card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
       .card-list a:hover .card-thumb { opacity: .85; }
       .card-list p { font-size: 14px; font-weight: 500; line-height: 1.5; margin: 0 0 4px; }
       .card-list time { font-size: 12px; color: var(--text-sub); }
-      .c1 { background: linear-gradient(135deg, #8fb9a8, #2f6f5e); }
-      .c2 { background: linear-gradient(135deg, #f3c18c, #e8833a); }
-      .c3 { background: linear-gradient(135deg, #a9c4e0, #4a7aa8); }
-      .c4 { background: linear-gradient(135deg, #d6c3e0, #8a6aa8); }
+      .c1 { background: linear-gradient(135deg, #ff8a5c, #e6361f); }
+      .c2 { background: linear-gradient(135deg, #4a6fa5, #16324f); }
+      .c3 { background: linear-gradient(135deg, #ffc24b, #f08c00); }
+      .c4 { background: linear-gradient(135deg, #e88bb0, #b03a6b); }
 
       /* ---------- Sidebar ---------- */
       .l-sidebar { min-width: 0; }
-      .widget { background: var(--white); border-radius: var(--radius); padding: 20px; margin-bottom: 24px; }
+      .widget {
+        background: var(--white); border-radius: var(--radius); padding: 20px; margin-bottom: 24px;
+        box-shadow: 0 1px 3px rgba(22, 50, 79, .06);
+      }
       .widget__title {
-        font-size: 16px; margin: 0 0 14px; padding-bottom: 8px;
-        border-bottom: 2px solid var(--main);
+        font-family: var(--font-head);
+        font-size: 16px; font-weight: 900; color: var(--navy);
+        margin: 0 0 14px; padding-bottom: 8px;
+        border-bottom: 3px solid var(--main);
       }
       .widget--sticky { position: sticky; top: 20px; }
       .search-wrap { position: relative; }
-      .search-form { display: flex; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+      .search-form { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
       .search-form input {
         flex: 1; border: none; padding: 10px 12px; font: inherit; font-size: 14px;
         outline: none; min-width: 0;
@@ -460,7 +485,7 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
         position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 30;
         list-style: none; margin: 0; padding: 6px 0; display: none;
         background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, .12); max-height: 300px; overflow: auto;
+        box-shadow: 0 8px 24px rgba(22, 50, 79, .14); max-height: 300px; overflow: auto;
       }
       .search-suggest.is-open { display: block; }
       .search-suggest a {
@@ -474,30 +499,29 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       .side-posts { list-style: none; padding: 0; margin: 0; }
       .side-posts li + li { margin-top: 12px; }
       .side-posts a { display: flex; gap: 10px; color: var(--text); }
-      .side-thumb { width: 90px; aspect-ratio: 16/9; flex-shrink: 0; border-radius: 3px; overflow: hidden; }
+      .side-thumb { width: 90px; aspect-ratio: 16/9; flex-shrink: 0; border-radius: 6px; overflow: hidden; }
       .side-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-      .side-posts p { margin: 0; font-size: 13px; line-height: 1.5; }
       .side-list { list-style: none; padding: 0; margin: 0; }
       .side-list a {
         display: block; padding: 8px 4px; border-bottom: 1px dotted var(--border);
         color: var(--text); font-size: 14px;
       }
-      .side-list a::before { content: "›"; color: var(--main); margin-right: 8px; }
+      .side-list a::before { content: "›"; color: var(--main); margin-right: 8px; font-weight: 700; }
       .side-count { color: var(--text-sub); font-size: 12px; }
       .side-toc { margin: 0; padding-left: 1.4em; font-size: 13px; max-height: 60vh; overflow: auto; }
       .side-toc li { margin: .4em 0; }
       .side-toc a { color: var(--text); }
       .side-toc a.is-active { color: var(--main); font-weight: 700; }
 
-      /* ---------- Footer ---------- */
-      .l-footer { background: #333; color: #ccc; text-align: center; padding: 32px 0 24px; font-size: 13px; }
+      /* ---------- Footer（ネイビー地） ---------- */
+      .l-footer { background: var(--navy-deep); color: #c3d0dd; text-align: center; padding: 36px 0 24px; font-size: 13px; }
       .f-nav {
         list-style: none; display: flex; justify-content: center; flex-wrap: wrap;
         gap: 4px 24px; margin: 0 auto 12px;
       }
-      .f-nav a { color: #ddd; }
-      .f-disclosure { font-size: 11px; color: #999; line-height: 1.7; margin: 0 auto 12px; }
-      .copyright { margin: 0; }
+      .f-nav a { color: #e6edf4; font-weight: 500; }
+      .f-disclosure { font-size: 11px; color: #8fa3b5; line-height: 1.7; margin: 0 auto 12px; }
+      .copyright { margin: 0; color: #8fa3b5; }
 
       /* ---------- Fixed buttons / modal ---------- */
       .fix-btns {
@@ -512,12 +536,12 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       }
       #fixToc { display: none; }
       .toc-modal {
-        position: fixed; inset: 0; background: rgba(0, 0, 0, .5); z-index: 100;
+        position: fixed; inset: 0; background: rgba(14, 34, 51, .55); z-index: 100;
         display: none; align-items: center; justify-content: center; padding: 20px;
       }
       .toc-modal.is-open { display: flex; }
       .toc-modal__inner {
-        background: #fff; border-radius: 8px; padding: 24px; width: 100%;
+        background: #fff; border-radius: 12px; padding: 24px; width: 100%;
         max-width: 480px; max-height: 80vh; overflow: auto;
       }
       .toc-modal__title { font-weight: 700; margin: 0 0 10px; text-align: center; }
@@ -540,7 +564,7 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
         .l-content { grid-template-columns: 1fr; gap: 24px; }
         .widget--sticky { display: none; }
         .l-header__inner { height: 60px; }
-        .site-logo { font-size: 20px; }
+        .site-logo { font-size: 21px; }
         .site-logo small { display: none; }
         .menu-btn { display: flex; }
         .search-btn { display: block; }
@@ -551,9 +575,9 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
         }
         .g-nav.is-open { transform: none; }
         .g-nav__list { flex-direction: column; padding: 0; }
-        .g-nav__list a { padding: 14px 20px; border-bottom: 1px solid var(--border); }
+        .g-nav__list a { padding: 14px 20px; border-bottom: 1px solid var(--border); color: var(--text); }
         .g-nav__list a::after { display: none; }
-        .overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, .4); z-index: 55; }
+        .overlay { position: fixed; inset: 0; background: rgba(14, 34, 51, .45); z-index: 55; }
         .overlay.is-show { display: block; }
         #fixToc { display: block; }
       }
@@ -573,25 +597,25 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
         .pn-links { grid-template-columns: 1fr; }
         .author__inner { flex-direction: column; text-align: center; }
       }
+
     </style>
   </head>
   <body>
     <header class="l-header">
       <div class="l-header__inner l-container">
         <button class="menu-btn" id="menuBtn" aria-label="メニュー" type="button"><span></span><span></span><span></span></button>
-        <a href="/" class="site-logo">よるじかん<small>電源オフの暮らしと快眠道具</small></a>
+        <a href={base} class="site-logo">リピ買い<span class="logo-accent">図鑑</span><small>売れ筋の数字で選ぶ、消耗品・リピート品の比較サイト</small></a>
         <button class="search-btn" id="searchBtn" aria-label="検索" type="button">
           <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
       <nav class="g-nav" id="gNav">
         <ul class="g-nav__list l-container">
-          <li><a href="/">ホーム</a></li>
-          {navTags.map((tag) => (
-            <li><a href={`/tags/${tag}/`}>{tag}</a></li>
+          <li><a href={base}>ホーム</a></li>
+          {navCategories.map((category) => (
+            <li><a href={`${base}categories/${category}/`}>{category}</a></li>
           ))}
-          <li><a href="/sleep-cycle/">睡眠サイクル計算</a></li>
-          <li><a href="/about/">このサイトについて</a></li>
+          <li><a href={`${base}about/`}>運営者情報</a></li>
         </ul>
       </nav>
     </header>
@@ -614,14 +638,15 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
 
     <footer class="l-footer">
       <ul class="f-nav l-container">
-        <li><a href="/">ホーム</a></li>
-        <li><a href="/sleep-cycle/">睡眠サイクル計算ツール</a></li>
-        <li><a href="/about/">このサイトについて</a></li>
+        <li><a href={base}>ホーム</a></li>
+        <li><a href={`${base}about/`}>運営者情報</a></li>
+        <li><a href={`${base}privacy/`}>プライバシーポリシー</a></li>
+        <li><a href={`${base}disclaimer/`}>免責事項</a></li>
       </ul>
       <p class="f-disclosure l-container">
-        当サイトは、Amazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定されたアフィリエイトプログラムである、Amazonアソシエイト・プログラムの参加者です。
+        当サイトは、Amazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定されたアフィリエイトプログラムである、Amazonアソシエイト・プログラムの参加者です。また、楽天アフィリエイト・プログラムにも参加しています。
       </p>
-      <p class="copyright">© 2026 よるじかん</p>
+      <p class="copyright">© 2026 リピ買い図鑑</p>
     </footer>
 
     <div class="fix-btns">
@@ -637,6 +662,6 @@ const hasBreadcrumb = await Astro.slots.has('breadcrumb');
       </div>
     </div>
 
-    <script src="/js/site.js" defer></script>
+    <script src={`${base}js/site.js`} defer></script>
   </body>
 </html>

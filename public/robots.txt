@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://yorujikan-blog.pages.dev/sitemap-index.xml
+Sitemap: https://ripigai.yorujikan-blog.pages.dev/sitemap-index.xml

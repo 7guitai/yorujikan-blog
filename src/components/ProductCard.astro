@@ -1,0 +1,144 @@
+---
+// 商品カード：Amazon（tag=kobebooka1-22）／楽天アフィリエイトリンクをカード形式で表示する。
+// 使い方（.mdx記事内）:
+//   import ProductCard from '../../components/ProductCard.astro';
+//   <ProductCard name="商品名" asin="B0XXXXXXXX" price="¥3,490〜" note="特徴を一言で" image="https://..." rakutenUrl="https://..." />
+interface Props {
+  name: string;
+  asin?: string;
+  amazonUrl?: string;
+  rakutenUrl?: string;
+  price?: string;
+  note?: string;
+  image?: string;
+}
+const { name, asin, amazonUrl, rakutenUrl, price, note, image } = Astro.props;
+const TAG = 'kobebooka1-22';
+const amazon = amazonUrl ?? (asin ? `https://www.amazon.co.jp/dp/${asin}?tag=${TAG}` : undefined);
+---
+
+<aside class="product-card">
+  {image && (
+    <div class="product-card-media">
+      <img src={image} alt={name} loading="lazy" />
+    </div>
+  )}
+  <div class="product-card-body">
+    <p class="product-card-name">{name}</p>
+    {price && <p class="product-card-price">{price}</p>}
+    {note && <p class="product-card-note">{note}</p>}
+    <div class="product-card-actions">
+      {amazon && (
+        <a class="product-card-btn product-card-btn-amazon" href={amazon} target="_blank" rel="nofollow sponsored noopener">Amazonで見る</a>
+      )}
+      {rakutenUrl && (
+        <a class="product-card-btn product-card-btn-rakuten" href={rakutenUrl} target="_blank" rel="nofollow sponsored noopener">楽天市場で見る</a>
+      )}
+    </div>
+    <p class="product-card-caption">※価格・在庫は変動します。最新の情報は販売ページでご確認ください。</p>
+  </div>
+</aside>
+
+<style>
+  .product-card {
+    display: flex;
+    gap: 18px;
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--main);
+    border-radius: var(--radius);
+    background: var(--white);
+    box-shadow: 0 2px 8px rgba(22, 50, 79, .08);
+    padding: 18px;
+    margin: 20px 0;
+  }
+  .product-card-media {
+    flex: 0 0 140px;
+  }
+  .product-card-media img {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    display: block;
+    border-radius: 8px;
+  }
+  .product-card-body {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .product-card-name {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--navy);
+    margin: 0 0 4px;
+  }
+  .product-card-price {
+    font-family: var(--font-head);
+    color: var(--main);
+    font-weight: 900;
+    font-size: 1.3rem;
+    line-height: 1.4;
+    margin: 0 0 6px;
+  }
+  .product-card-note {
+    color: var(--text);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin: 0 0 14px;
+  }
+  .product-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .product-card-btn {
+    display: inline-block;
+    padding: 11px 22px;
+    border-radius: 999px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    text-align: center;
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  }
+  .product-card-btn-amazon {
+    background: linear-gradient(180deg, #ff9900, #e47911);
+    box-shadow: 0 3px 0 #b95e04;
+  }
+  .product-card-btn-rakuten {
+    background: #bf0000;
+    box-shadow: 0 3px 0 #7f0000;
+  }
+  .product-card-btn:hover {
+    color: #fff;
+    opacity: 1;
+    filter: brightness(1.05);
+    transform: translateY(1px);
+  }
+  .product-card-btn-amazon:hover { box-shadow: 0 2px 0 #b95e04; }
+  .product-card-btn-rakuten:hover { box-shadow: 0 2px 0 #7f0000; }
+  .product-card-caption {
+    color: var(--text-sub);
+    font-size: 0.78rem;
+    margin: 10px 0 0;
+  }
+  @media (max-width: 640px) {
+    .product-card {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .product-card-media {
+      flex: none;
+      text-align: center;
+    }
+    .product-card-media img {
+      margin: 0 auto;
+    }
+    .product-card-btn {
+      flex: 1 1 100%;
+    }
+  }
+
+</style>

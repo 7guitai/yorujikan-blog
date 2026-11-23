@@ -1,4 +1,4 @@
-/* よるじかん - site.js（テンプレートの script.js をベースに移植） */
+/* リピ買い図鑑 - site.js（テンプレートの script.js をベースに移植） */
 (function () {
   'use strict';
 

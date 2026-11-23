@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const withBase = (path: string | undefined) => (path && path.startsWith('/') ? `${base}${path.slice(1)}` : path);
 
 export async function getStaticPaths() {
   const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
@@ -23,10 +25,10 @@ const formatDate = (d: Date) =>
 
 <Base
   title={`タグ「${tag}」の記事一覧`}
-  description={`よるじかんのタグ「${tag}」が付いた記事一覧です。寝る前のセルフケアや快眠グッズを、選び方と比較とあわせて紹介しています。`}
+  description={`リピ買い図鑑のタグ「${tag}」が付いた記事一覧です。売れ筋の数字をもとに、消耗品・リピート品を比較しています。`}
 >
   <Fragment slot="breadcrumb">
-    <li><a href="/">ホーム</a></li>
+    <li><a href={base}>ホーム</a></li>
     <li aria-current="page">タグ「{tag}」</li>
   </Fragment>
 
@@ -38,40 +40,47 @@ const formatDate = (d: Date) =>
   <ul class="post-grid">
     {posts.map((post, i) => (
       <li class="post-card">
-        <a href={`/blog/${post.id}/`} class="post-card__thumb">
+        <a href={`${base}blog/${post.id}/`} class="post-card__thumb">
           {post.data.heroImage ? (
-            <img src={post.data.heroImage} alt="" loading="lazy" />
+            <img src={withBase(post.data.heroImage)} alt="" loading="lazy" />
           ) : (
-            <span class={`post-card__thumb-empty c${(i % 4) + 1}`}>☾</span>
+            <span class={`post-card__thumb-empty c${(i % 4) + 1}`}>↻</span>
           )}
         </a>
         <div class="post-card__body">
           <div class="post-card__meta">
-            {post.data.tags[0] && (
-              <span class="cat-label">{post.data.tags[0]}</span>
-            )}
+            <span class="cat-label">{post.data.category}</span>
             <time datetime={post.data.pubDate.toISOString()}>
               {formatDate(post.data.pubDate)}
             </time>
           </div>
-          <a href={`/blog/${post.id}/`} class="post-card__title">{post.data.title}</a>
+          <a href={`${base}blog/${post.id}/`} class="post-card__title">{post.data.title}</a>
           <p class="post-card__desc">{post.data.description}</p>
         </div>
       </li>
     ))}
   </ul>
 
-  <p class="back"><a href="/">← 記事一覧へ戻る</a></p>
+  <p class="back"><a href={base}>← 記事一覧へ戻る</a></p>
   <style>
     .page-head {
       background: var(--white);
       border-radius: var(--radius);
+      border-left: 6px solid var(--main);
+      box-shadow: 0 1px 3px rgba(22, 50, 79, .07);
       padding: 28px 32px;
       margin-bottom: 28px;
     }
-    .page-head h1 { font-size: 24px; margin: 0 0 8px; line-height: 1.5; }
+    .page-head h1 {
+      font-family: var(--font-head); font-size: 24px; font-weight: 900;
+      color: var(--navy); margin: 0 0 8px; line-height: 1.5;
+    }
     .lead { color: #555; margin: 0; font-size: 15px; }
     .back { margin-top: 36px; font-size: 14px; }
+    .empty-note {
+      background: var(--white); border-radius: var(--radius);
+      padding: 28px 32px; color: #555; font-size: 15px;
+    }
 
     .post-grid {
       list-style: none; padding: 0; margin: 0;
@@ -79,11 +88,11 @@ const formatDate = (d: Date) =>
     }
     .post-card {
       background: var(--white); border-radius: var(--radius); overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, .06); display: flex; flex-direction: column;
+      box-shadow: 0 1px 4px rgba(22, 50, 79, .08); display: flex; flex-direction: column;
       transition: .2s;
     }
-    .post-card:hover { box-shadow: 0 4px 14px rgba(0, 0, 0, .1); }
-    .post-card__thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: var(--main-light); }
+    .post-card:hover { box-shadow: 0 8px 20px rgba(22, 50, 79, .14); transform: translateY(-3px); }
+    .post-card__thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: var(--navy-light); }
     .post-card__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: .2s; }
     .post-card:hover .post-card__thumb img { opacity: .88; }
     .post-card__thumb-empty {
@@ -101,6 +110,8 @@ const formatDate = (d: Date) =>
     @media (max-width: 700px) {
       .post-grid { grid-template-columns: 1fr; }
       .page-head { padding: 22px 18px; }
+      .empty-note { padding: 22px 18px; }
     }
+
   </style>
 </Base>

@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import type { MarkdownHeading } from 'astro';
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const withBase = (path: string | undefined) => (path && path.startsWith('/') ? `${base}${path.slice(1)}` : path);
 
 interface Props {
   toc?: MarkdownHeading[];
@@ -13,21 +15,20 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 );
 const recent = posts.slice(0, 5);
 
-// カテゴリー（タグ＋件数、件数の多い順）
-const tagCounts = new Map<string, number>();
+// カテゴリー（固定5分類＋件数）
+const CATEGORIES = ['食品・飲料', 'コスメ・美容', '日用品・キッチン', 'ペット用品', 'ベビー'];
+const categoryCounts = new Map<string, number>();
 for (const post of posts) {
-  for (const tag of post.data.tags) {
-    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
-  }
+  categoryCounts.set(post.data.category, (categoryCounts.get(post.data.category) ?? 0) + 1);
 }
-const tags = [...tagCounts.entries()].sort(
-  (a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ja'),
+const categories = CATEGORIES.map(
+  (category) => [category, categoryCounts.get(category) ?? 0] as [string, number],
 );
 
 // 検索サジェスト用インデックス（全記事タイトル＋URL）
 const searchIndex = posts.map((post) => ({
   title: post.data.title,
-  url: `/blog/${post.id}/`,
+  url: `${base}blog/${post.id}/`,
 }));
 
 const sideToc = toc.filter((h) => h.depth === 2);
@@ -56,12 +57,12 @@ const sideToc = toc.filter((h) => h.depth === 2);
   <div class="widget">
     <h3 class="widget__title">プロフィール</h3>
     <div class="profile">
-      <div class="avatar avatar--lg">☾</div>
-      <p class="profile__name">よるじかん編集部</p>
+      <div class="avatar avatar--lg">↻</div>
+      <p class="profile__name">リピ買い図鑑編集部</p>
       <p class="profile__desc">
-        寝る前のセルフケアと快眠道具を調べるのが好きな個人運営ブログです。実際に使ったもの・調べたものを、正直にまとめています。
+        売れ筋の数字（ランキング順位・レビュー件数・単価）をもとに、消耗品・リピート品を比較する個人運営サイトです。スペック・価格・レビュー傾向を、正直にまとめています。
       </p>
-      <p class="profile__link"><a href="/about/">このブログについて →</a></p>
+      <p class="profile__link"><a href={`${base}about/`}>運営者情報 →</a></p>
     </div>
   </div>
 
@@ -70,10 +71,10 @@ const sideToc = toc.filter((h) => h.depth === 2);
     <ul class="side-posts">
       {recent.map((post, i) => (
         <li>
-          <a href={`/blog/${post.id}/`}>
+          <a href={`${base}blog/${post.id}/`}>
             <div class={`side-thumb c${(i % 4) + 1}`}>
               {post.data.heroImage && (
-                <img src={post.data.heroImage} alt="" loading="lazy" />
+                <img src={withBase(post.data.heroImage)} alt="" loading="lazy" />
               )}
             </div>
             <p>{post.data.title}</p>
@@ -86,9 +87,9 @@ const sideToc = toc.filter((h) => h.depth === 2);
   <div class="widget">
     <h3 class="widget__title">カテゴリー</h3>
     <ul class="side-list">
-      {tags.map(([tag, count]) => (
+      {categories.map(([category, count]) => (
         <li>
-          <a href={`/tags/${tag}/`}>{tag}<span class="side-count">（{count}）</span></a>
+          <a href={`${base}categories/${category}/`}>{category}<span class="side-count">（{count}）</span></a>
         </li>
       ))}
     </ul>
