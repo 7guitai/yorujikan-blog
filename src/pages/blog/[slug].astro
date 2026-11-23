@@ -209,7 +209,7 @@ const related = allPosts
       </nav>
     )}
 
-    <section class="author">
+    <section class="author reveal">
       <h2 class="section-title">この記事を書いた人</h2>
       <div class="author__inner">
         <div class="avatar avatar--lg">↻</div>
@@ -228,7 +228,7 @@ const related = allPosts
         <h2 class="section-title">関連記事</h2>
         <ul class="card-list">
           {related.map((p, i) => (
-            <li>
+            <li class="reveal" style={`transition-delay: ${(i % 2) * 70}ms`}>
               <a href={`${base}blog/${p.id}/`}>
                 <div class={`card-thumb c${(i % 4) + 1}`}>
                   {p.data.heroImage && (

@@ -1,1 +1,11 @@
 ogp.png
+banner-bihaku-serum-best5.jpg
+banner-cleansing-oil-best5.jpg
+banner-face-towel-best5.jpg
+banner-hone-tori-sakana-best5.jpg
+banner-water-sparkling-case-best5.jpg
+hero-bihaku-serum-best5.jpg
+hero-cleansing-oil-best5.jpg
+hero-face-towel-best5.jpg
+hero-hone-tori-sakana-best5.jpg
+hero-water-sparkling-case-best5.jpg

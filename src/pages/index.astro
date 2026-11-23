@@ -29,26 +29,53 @@ const formatDate = (d: Date) =>
   title="リピ買い図鑑｜売れ筋の数字で選ぶ消耗品・リピート品の比較サイト"
   description="楽天・Amazonの売れ筋ランキング順位、レビュー件数、単価などの数字をもとに、食品・飲料、コスメ・美容、日用品・キッチン、ペット用品、ベビー用品の消耗品・リピート品を比較するサイト「リピ買い図鑑」です。"
 >
-  <div class="page-head">
-    <h1>リピ買い図鑑</h1>
-    <p class="lead">売れ筋の数字（ランキング順位・レビュー件数・単価）で選ぶ、消耗品・リピート品の比較サイトです。食品・飲料、コスメ・美容、日用品・キッチン、ペット用品、ベビー用品を中心に、スペック・価格・購入者レビューの傾向をもとに比較しています。</p>
-  </div>
+  <section class="hero">
+    <p class="hero__eyebrow hero-anim">REPIKAI ZUKAN — CONSUMABLES &amp; REPEAT ITEMS GUIDE</p>
+    <h1 class="hero__title hero-anim d1">売れ筋の<em>数字</em>で選ぶ、<br />リピート品の図鑑。</h1>
+    <p class="hero__lead hero-anim d2">
+      ランキング順位・レビュー件数・単価。感覚ではなく数字をもとに、食品・飲料、コスメ・美容、日用品、ペット用品、ベビー用品の「繰り返し買うもの」を比べる比較メディアです。
+    </p>
+    <dl class="hero__stats hero-anim d3">
+      <div class="hero__stat">
+        <dt>掲載記事</dt>
+        <dd>{posts.length}<span>本</span></dd>
+      </div>
+      <div class="hero__stat">
+        <dt>カテゴリー</dt>
+        <dd>{categories.length}<span>分類</span></dd>
+      </div>
+      <div class="hero__stat">
+        <dt>比較モール</dt>
+        <dd>2<span>楽天市場・Amazon</span></dd>
+      </div>
+    </dl>
+  </section>
 
-  <section>
-    <h2 class="sec-title">カテゴリーから探す</h2>
-    <ul class="tag-chips">
-      {categories.map(([category, count]) => (
-        <li>
-          <a class="tag-chip" href={`${base}categories/${category}/`}>{category}<span class="tag-count">{count}</span></a>
+  <section class="sec">
+    <div class="sec-head reveal">
+      <p class="sec-eyebrow">Categories</p>
+      <h2 class="sec-title">カテゴリーから探す</h2>
+    </div>
+    <ul class="cat-grid">
+      {categories.map(([category, count], i) => (
+        <li class="reveal" style={`transition-delay: ${i * 60}ms`}>
+          <a class="cat-card" href={`${base}categories/${category}/`}>
+            <span class="cat-card__name">{category}</span>
+            <span class="cat-card__meta">{count}記事</span>
+            <span class="cat-card__arrow" aria-hidden="true">→</span>
+          </a>
         </li>
       ))}
     </ul>
   </section>
 
   {featured && (
-    <section>
-      <h2 class="sec-title">おすすめ記事</h2>
-      <a class="featured-card" href={`${base}blog/${featured.id}/`}>
+    <section class="sec">
+      <div class="sec-head reveal">
+        <p class="sec-eyebrow">Featured</p>
+        <h2 class="sec-title">おすすめ記事</h2>
+      </div>
+      <a class="featured-card reveal" href={`${base}blog/${featured.id}/`}>
         <span class="featured-thumb">
           {featured.data.heroImage ? (
             <img src={withBase(featured.data.heroImage)} alt="" />
@@ -66,23 +93,26 @@ const formatDate = (d: Date) =>
           </span>
           <span class="featured-title">{featured.data.title}</span>
           <span class="featured-desc">{featured.data.description}</span>
-          <span class="featured-more">記事を読む ›</span>
+          <span class="featured-more">記事を読む<span class="featured-more__arrow" aria-hidden="true">→</span></span>
         </span>
       </a>
     </section>
   )}
 
-  <section>
-    <h2 class="sec-title">最新記事</h2>
+  <section class="sec">
+    <div class="sec-head reveal">
+      <p class="sec-eyebrow">Latest</p>
+      <h2 class="sec-title">最新記事</h2>
+    </div>
     {restPosts.length > 0 ? (
       <ul class="post-grid">
         {restPosts.map((post, i) => (
-          <li class="post-card">
+          <li class="post-card reveal" style={`transition-delay: ${(i % 2) * 70}ms`}>
             <a href={`${base}blog/${post.id}/`} class="post-card__thumb">
               {post.data.heroImage ? (
                 <img src={withBase(post.data.heroImage)} alt="" loading="lazy" />
               ) : (
-                <span class={`post-card__thumb-empty c${(i % 4) + 1}`}>↻</span>
+                <span class="post-card__thumb-empty">↻</span>
               )}
             </a>
             <div class="post-card__body">
@@ -102,123 +132,217 @@ const formatDate = (d: Date) =>
       <p class="empty-note">記事は準備中です。これから順次公開していきます。</p>
     )}
   </section>
+
+  <section class="sec about-strip reveal">
+    <p class="sec-eyebrow">About</p>
+    <p class="about-strip__text">
+      リピ買い図鑑は、体験談ではなくスペック・価格・購入者レビューの傾向をもとに、消耗品とリピート品を比較する個人運営サイトです。よい点も気になる点も含めて、数字で正直にまとめています。
+    </p>
+    <a class="about-strip__link" href={`${base}about/`}>運営者情報<span aria-hidden="true">→</span></a>
+  </section>
+
   <style>
-    .page-head {
-      background: var(--white);
-      border-radius: var(--radius);
-      border-left: 6px solid var(--main);
-      box-shadow: 0 1px 3px rgba(22, 50, 79, .07);
-      padding: 28px 32px;
-      margin-bottom: 32px;
+    /* ---------- Hero ---------- */
+    .hero {
+      padding: 44px 8px 40px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 8px;
     }
-    .page-head h1 {
-      font-family: var(--font-head); font-size: 24px; font-weight: 900;
-      color: var(--navy); margin: 0 0 8px; line-height: 1.5;
+    .hero__eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: .24em;
+      color: var(--main-deep); margin: 0 0 20px;
     }
-    .lead { color: #555; margin: 0; font-size: 15px; }
+    .hero__title {
+      font-size: 40px; font-weight: 900; line-height: 1.45;
+      color: var(--ink); margin: 0 0 20px; letter-spacing: .01em;
+    }
+    .hero__title em { font-style: normal; color: var(--main); }
+    .hero__lead {
+      font-size: 15.5px; line-height: 2; color: #4c4a45;
+      margin: 0 0 34px; max-width: 40em;
+    }
+    .hero__stats {
+      display: flex; gap: 0; margin: 0;
+      border-top: 1px solid var(--line);
+    }
+    .hero__stat {
+      flex: 1; padding: 18px 20px 4px 0;
+    }
+    .hero__stat + .hero__stat {
+      border-left: 1px solid var(--line); padding-left: 24px;
+    }
+    .hero__stat dt {
+      font-size: 11px; font-weight: 700; letter-spacing: .16em;
+      color: var(--text-sub); margin: 0 0 4px;
+    }
+    .hero__stat dd {
+      font-family: var(--font-head);
+      font-size: 34px; font-weight: 900; line-height: 1.2;
+      color: var(--ink); margin: 0;
+    }
+    .hero__stat dd span {
+      font-size: 12px; font-weight: 700; color: var(--text-sub);
+      margin-left: 6px; letter-spacing: .04em;
+    }
+
+    /* ---------- Section head ---------- */
+    .sec { margin-top: 52px; }
+    .sec-head { margin-bottom: 22px; }
+    .sec-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: .24em;
+      color: var(--main-deep); margin: 0 0 6px; text-transform: uppercase;
+    }
     .sec-title {
       font-family: var(--font-head);
-      font-size: 19px; font-weight: 900; color: var(--navy);
-      margin: 36px 0 16px; padding: 0 0 8px 14px; position: relative;
-      border-bottom: 2px solid var(--border);
+      font-size: 24px; font-weight: 900; color: var(--ink);
+      margin: 0; line-height: 1.4;
+      display: flex; align-items: center; gap: 14px;
     }
-    .sec-title::before {
-      content: ""; position: absolute; left: 0; top: 2px; bottom: 10px;
-      width: 5px; border-radius: 3px; background: var(--main);
+    .sec-title::after {
+      content: ""; flex: 1; height: 1px; background: var(--line);
     }
-    section:first-of-type .sec-title { margin-top: 0; }
     .empty-note {
-      background: var(--white); border-radius: var(--radius);
-      padding: 28px 32px; color: #555; font-size: 15px; margin: 0;
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px 32px; color: #55534e; font-size: 15px; margin: 0;
     }
+
+    /* ---------- カテゴリーカード ---------- */
+    .cat-grid {
+      list-style: none; padding: 0; margin: 0;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    }
+    .cat-card {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: 14px; padding: 18px 20px; color: var(--text);
+      transition: transform .3s cubic-bezier(.16, .61, .36, 1), box-shadow .3s ease, border-color .3s ease;
+    }
+    .cat-card:hover {
+      text-decoration: none; transform: translateY(-3px);
+      box-shadow: var(--shadow-m); border-color: var(--line-dark);
+    }
+    .cat-card__name { font-weight: 700; font-size: 15px; flex: 1; min-width: 0; }
+    .cat-card__meta { font-size: 12px; color: var(--text-sub); white-space: nowrap; }
+    .cat-card__arrow {
+      color: var(--main); font-weight: 700;
+      transition: transform .3s cubic-bezier(.16, .61, .36, 1);
+    }
+    .cat-card:hover .cat-card__arrow { transform: translateX(4px); }
 
     /* ---------- おすすめ記事（特集） ---------- */
     .featured-card {
-      display: flex; background: var(--white); border-radius: var(--radius);
-      border-top: 4px solid var(--main);
+      display: flex; background: var(--surface); border: 1px solid var(--line);
+      border-radius: 18px;
       overflow: hidden; color: var(--text);
-      box-shadow: 0 2px 8px rgba(22, 50, 79, .1);
-      transition: .2s;
+      box-shadow: var(--shadow-s);
+      transition: transform .35s cubic-bezier(.16, .61, .36, 1), box-shadow .35s ease, opacity .8s ease;
     }
-    .featured-card:hover { opacity: 1; box-shadow: 0 8px 22px rgba(22, 50, 79, .16); transform: translateY(-2px); }
+    .featured-card:hover {
+      text-decoration: none; box-shadow: var(--shadow-m); transform: translateY(-3px);
+    }
     .featured-thumb {
-      position: relative; flex: 0 0 52%; aspect-ratio: 16 / 9;
-      overflow: hidden; background: var(--navy-light); display: block;
+      position: relative; flex: 0 0 54%; aspect-ratio: 16 / 10;
+      overflow: hidden; background: var(--bg-alt); display: block;
     }
-    .featured-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .featured-thumb img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform .6s cubic-bezier(.16, .61, .36, 1);
+    }
+    .featured-card:hover .featured-thumb img { transform: scale(1.04); }
     .featured-thumb-empty {
       width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-      font-size: 3rem;
-      background: linear-gradient(135deg, #ff8a5c, var(--main)); color: #fff;
+      font-size: 3rem; color: rgba(22, 50, 79, .22);
+      background: var(--bg-alt);
     }
     .featured-badge {
-      position: absolute; top: 12px; left: 12px;
-      background: var(--main); color: #fff;
-      font-size: 12px; font-weight: 700; padding: 3px 14px; border-radius: 999px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+      position: absolute; top: 14px; left: 14px;
+      background: rgba(255, 255, 255, .95); color: var(--main-deep);
+      border: 1px solid var(--line);
+      font-size: 11.5px; font-weight: 700; letter-spacing: .08em;
+      padding: 3px 13px; border-radius: 999px;
+      box-shadow: var(--shadow-s);
     }
     .featured-body {
-      flex: 1; min-width: 0; padding: 20px 24px;
-      display: flex; flex-direction: column; gap: 10px; justify-content: center;
+      flex: 1; min-width: 0; padding: 30px 32px;
+      display: flex; flex-direction: column; gap: 12px; justify-content: center;
     }
     .featured-meta { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-sub); }
-    .featured-title { font-family: var(--font-head); font-size: 19px; font-weight: 900; line-height: 1.55; }
-    .featured-card:hover .featured-title { color: var(--main); }
+    .featured-title {
+      font-family: var(--font-head); font-size: 21px; font-weight: 900; line-height: 1.6;
+      transition: color .2s ease;
+    }
+    .featured-card:hover .featured-title { color: var(--main-deep); }
     .featured-desc {
-      font-size: 13.5px; color: #555; line-height: 1.75; margin: 0;
+      font-size: 13.5px; color: #55534e; line-height: 1.85; margin: 0;
       display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
     }
-    .featured-more { color: var(--main); font-weight: 700; font-size: 14px; }
-
-    /* ---------- カテゴリーチップ ---------- */
-    .tag-chips { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-    .tag-chip {
-      display: inline-flex; align-items: center; gap: 7px;
-      background: var(--white); color: var(--text);
-      border: 1px solid var(--border); border-radius: 999px;
-      padding: 4px 14px; font-size: 13.5px; font-weight: 500; transition: .15s;
+    .featured-more {
+      color: var(--main-deep); font-weight: 700; font-size: 14px;
+      display: inline-flex; align-items: center; gap: 8px;
     }
-    .tag-chip:hover { border-color: var(--navy); color: var(--navy); opacity: 1; }
-    .tag-count {
-      background: var(--main); color: #fff;
-      border-radius: 999px; padding: 0 7px; font-size: 11px; line-height: 1.8; font-weight: 700;
-    }
+    .featured-more__arrow { transition: transform .3s cubic-bezier(.16, .61, .36, 1); }
+    .featured-card:hover .featured-more__arrow { transform: translateX(4px); }
 
     /* ---------- 記事カード ---------- */
     .post-grid {
       list-style: none; padding: 0; margin: 0;
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px;
     }
     .post-card {
-      background: var(--white); border-radius: var(--radius); overflow: hidden;
-      box-shadow: 0 1px 4px rgba(22, 50, 79, .08); display: flex; flex-direction: column;
-      transition: .2s;
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius); overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: transform .35s cubic-bezier(.16, .61, .36, 1), box-shadow .35s ease, opacity .8s ease;
     }
-    .post-card:hover { box-shadow: 0 8px 20px rgba(22, 50, 79, .14); transform: translateY(-3px); }
-    .post-card__thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: var(--navy-light); }
-    .post-card__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: .2s; }
-    .post-card:hover .post-card__thumb img { opacity: .88; }
+    .post-card:hover { box-shadow: var(--shadow-m); transform: translateY(-3px); }
+    .post-card__thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: var(--bg-alt); }
+    .post-card__thumb img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform .6s cubic-bezier(.16, .61, .36, 1);
+    }
+    .post-card:hover .post-card__thumb img { transform: scale(1.04); }
     .post-card__thumb-empty {
       width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-      font-size: 2.4rem; color: #fff;
+      font-size: 2.2rem; color: rgba(22, 50, 79, .22);
+      background: var(--bg-alt);
     }
-    .post-card__body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; }
+    .post-card__body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 9px; }
     .post-card__meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-sub); flex-wrap: wrap; }
-    .post-card__title { font-size: 15.5px; font-weight: 700; line-height: 1.55; color: var(--text); }
-    .post-card__title:hover { color: var(--main); opacity: 1; }
+    .post-card__title { font-size: 15.5px; font-weight: 700; line-height: 1.6; color: var(--text); }
+    .post-card__title:hover { color: var(--main-deep); text-decoration: none; }
     .post-card__desc {
-      margin: 0; font-size: 13px; color: #555; line-height: 1.75;
+      margin: 0; font-size: 13px; color: #55534e; line-height: 1.8;
       display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
     }
-    @media (max-width: 700px) {
-      .featured-card { flex-direction: column; }
-      .featured-thumb { flex: none; }
-      .featured-body { padding: 16px 18px 18px; }
-      .featured-title { font-size: 17px; }
-      .post-grid { grid-template-columns: 1fr; }
-      .page-head { padding: 22px 18px; }
-      .empty-note { padding: 22px 18px; }
+
+    /* ---------- About strip ---------- */
+    .about-strip {
+      background: var(--bg-alt); border-radius: var(--radius);
+      padding: 32px 36px;
+    }
+    .about-strip__text {
+      font-size: 14.5px; line-height: 2; color: #4c4a45; margin: 0 0 14px;
+    }
+    .about-strip__link {
+      font-weight: 700; font-size: 14px; color: var(--main-deep);
+      display: inline-flex; align-items: center; gap: 8px;
     }
 
+    @media (max-width: 700px) {
+      .hero { padding: 30px 2px 30px; }
+      .hero__title { font-size: 29px; }
+      .hero__stat dd { font-size: 26px; }
+      .hero__stat { padding-right: 12px; }
+      .hero__stat + .hero__stat { padding-left: 14px; }
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+      .featured-card { flex-direction: column; }
+      .featured-thumb { flex: none; }
+      .featured-body { padding: 20px 22px 24px; }
+      .featured-title { font-size: 18px; }
+      .post-grid { grid-template-columns: 1fr; }
+      .about-strip { padding: 24px 20px; }
+      .empty-note { padding: 22px 18px; }
+    }
   </style>
 </Base>

@@ -32,7 +32,8 @@ const formatDate = (d: Date) =>
     <li aria-current="page">カテゴリー「{category}」</li>
   </Fragment>
 
-  <div class="page-head">
+  <div class="page-head reveal">
+    <p class="page-eyebrow">Category</p>
     <h1>カテゴリー「{category}」の記事</h1>
     <p class="lead">全{posts.length}件の記事があります。</p>
   </div>
@@ -40,12 +41,12 @@ const formatDate = (d: Date) =>
   {posts.length > 0 ? (
     <ul class="post-grid">
       {posts.map((post, i) => (
-        <li class="post-card">
+        <li class="post-card reveal" style={`transition-delay: ${(i % 2) * 70}ms`}>
           <a href={`${base}blog/${post.id}/`} class="post-card__thumb">
             {post.data.heroImage ? (
               <img src={withBase(post.data.heroImage)} alt="" loading="lazy" />
             ) : (
-              <span class={`post-card__thumb-empty c${(i % 4) + 1}`}>↻</span>
+              <span class="post-card__thumb-empty">↻</span>
             )}
           </a>
           <div class="post-card__body">
@@ -68,52 +69,59 @@ const formatDate = (d: Date) =>
   <p class="back"><a href={base}>← トップページへ戻る</a></p>
   <style>
     .page-head {
-      background: var(--white);
-      border-radius: var(--radius);
-      border-left: 6px solid var(--main);
-      box-shadow: 0 1px 3px rgba(22, 50, 79, .07);
-      padding: 28px 32px;
-      margin-bottom: 28px;
+      padding: 26px 4px 24px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 30px;
+    }
+    .page-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: .24em;
+      color: var(--main-deep); margin: 0 0 8px; text-transform: uppercase;
     }
     .page-head h1 {
-      font-family: var(--font-head); font-size: 24px; font-weight: 900;
-      color: var(--navy); margin: 0 0 8px; line-height: 1.5;
+      font-family: var(--font-head); font-size: 27px; font-weight: 900;
+      color: var(--ink); margin: 0 0 8px; line-height: 1.5;
     }
-    .lead { color: #555; margin: 0; font-size: 15px; }
-    .back { margin-top: 36px; font-size: 14px; }
+    .lead { color: #55534e; margin: 0; font-size: 15px; }
+    .back { margin-top: 40px; font-size: 14px; }
     .empty-note {
-      background: var(--white); border-radius: var(--radius);
-      padding: 28px 32px; color: #555; font-size: 15px;
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px 32px; color: #55534e; font-size: 15px;
     }
 
     .post-grid {
       list-style: none; padding: 0; margin: 0;
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px;
     }
     .post-card {
-      background: var(--white); border-radius: var(--radius); overflow: hidden;
-      box-shadow: 0 1px 4px rgba(22, 50, 79, .08); display: flex; flex-direction: column;
-      transition: .2s;
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius); overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: transform .35s cubic-bezier(.16, .61, .36, 1), box-shadow .35s ease, opacity .8s ease;
     }
-    .post-card:hover { box-shadow: 0 8px 20px rgba(22, 50, 79, .14); transform: translateY(-3px); }
-    .post-card__thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: var(--navy-light); }
-    .post-card__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: .2s; }
-    .post-card:hover .post-card__thumb img { opacity: .88; }
+    .post-card:hover { box-shadow: var(--shadow-m); transform: translateY(-3px); }
+    .post-card__thumb { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: var(--bg-alt); }
+    .post-card__thumb img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform .6s cubic-bezier(.16, .61, .36, 1);
+    }
+    .post-card:hover .post-card__thumb img { transform: scale(1.04); }
     .post-card__thumb-empty {
       width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-      font-size: 2.4rem; color: #fff;
+      font-size: 2.2rem; color: rgba(22, 50, 79, .22);
+      background: var(--bg-alt);
     }
-    .post-card__body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; }
+    .post-card__body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 9px; }
     .post-card__meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-sub); flex-wrap: wrap; }
-    .post-card__title { font-size: 15.5px; font-weight: 700; line-height: 1.55; color: var(--text); }
-    .post-card__title:hover { color: var(--main); opacity: 1; }
+    .post-card__title { font-size: 15.5px; font-weight: 700; line-height: 1.6; color: var(--text); }
+    .post-card__title:hover { color: var(--main-deep); text-decoration: none; }
     .post-card__desc {
-      margin: 0; font-size: 13px; color: #555; line-height: 1.75;
+      margin: 0; font-size: 13px; color: #55534e; line-height: 1.8;
       display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
     }
     @media (max-width: 700px) {
       .post-grid { grid-template-columns: 1fr; }
-      .page-head { padding: 22px 18px; }
+      .page-head h1 { font-size: 23px; }
       .empty-note { padding: 22px 18px; }
     }
 

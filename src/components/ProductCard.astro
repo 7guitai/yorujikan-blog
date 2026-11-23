@@ -17,7 +17,7 @@ const TAG = 'kobebooka1-22';
 const amazon = amazonUrl ?? (asin ? `https://www.amazon.co.jp/dp/${asin}?tag=${TAG}` : undefined);
 ---
 
-<aside class="product-card">
+<aside class="product-card reveal">
   {image && (
     <div class="product-card-media">
       <img src={image} alt={name} loading="lazy" />
@@ -42,24 +42,30 @@ const amazon = amazonUrl ?? (asin ? `https://www.amazon.co.jp/dp/${asin}?tag=${T
 <style>
   .product-card {
     display: flex;
-    gap: 18px;
-    border: 1px solid var(--border);
-    border-top: 4px solid var(--main);
+    gap: 20px;
+    border: 1px solid var(--line);
     border-radius: var(--radius);
-    background: var(--white);
-    box-shadow: 0 2px 8px rgba(22, 50, 79, .08);
-    padding: 18px;
-    margin: 20px 0;
+    background: var(--surface);
+    box-shadow: var(--shadow-s);
+    padding: 22px;
+    margin: 24px 0;
   }
   .product-card-media {
-    flex: 0 0 140px;
+    flex: 0 0 148px;
+    background: var(--bg-alt);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    align-self: flex-start;
   }
   .product-card-media img {
-    width: 140px;
-    height: 140px;
+    width: 128px;
+    height: 128px;
     object-fit: contain;
     display: block;
-    border-radius: 8px;
+    border-radius: 6px;
   }
   .product-card-body {
     flex: 1 1 auto;
@@ -68,24 +74,25 @@ const amazon = amazonUrl ?? (asin ? `https://www.amazon.co.jp/dp/${asin}?tag=${T
   .product-card-name {
     font-family: var(--font-head);
     font-weight: 700;
-    font-size: 1.05rem;
-    line-height: 1.5;
-    color: var(--navy);
-    margin: 0 0 4px;
+    font-size: 1.03rem;
+    line-height: 1.55;
+    color: var(--ink);
+    margin: 0 0 6px;
   }
   .product-card-price {
     font-family: var(--font-head);
-    color: var(--main);
+    color: var(--main-deep);
     font-weight: 900;
-    font-size: 1.3rem;
+    font-size: 1.28rem;
     line-height: 1.4;
-    margin: 0 0 6px;
+    letter-spacing: .01em;
+    margin: 0 0 8px;
   }
   .product-card-note {
     color: var(--text);
     font-size: 0.92rem;
-    line-height: 1.6;
-    margin: 0 0 14px;
+    line-height: 1.7;
+    margin: 0 0 16px;
   }
   .product-card-actions {
     display: flex;
@@ -94,44 +101,44 @@ const amazon = amazonUrl ?? (asin ? `https://www.amazon.co.jp/dp/${asin}?tag=${T
   }
   .product-card-btn {
     display: inline-block;
-    padding: 11px 22px;
-    border-radius: 999px;
-    color: #fff;
+    padding: 12px 24px;
+    border-radius: 10px;
     font-weight: 700;
     font-size: 0.95rem;
     text-decoration: none;
     text-align: center;
-    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    box-shadow: 0 1px 2px rgba(23, 30, 39, .18);
+    transition: transform .2s ease, box-shadow .2s ease;
   }
   .product-card-btn-amazon {
-    background: linear-gradient(180deg, #ff9900, #e47911);
-    box-shadow: 0 3px 0 #b95e04;
+    background: #ffa41c;
+    color: #0f1111;
   }
   .product-card-btn-rakuten {
     background: #bf0000;
-    box-shadow: 0 3px 0 #7f0000;
+    color: #fff;
   }
   .product-card-btn:hover {
-    color: #fff;
-    opacity: 1;
-    filter: brightness(1.05);
-    transform: translateY(1px);
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(23, 30, 39, .18);
   }
-  .product-card-btn-amazon:hover { box-shadow: 0 2px 0 #b95e04; }
-  .product-card-btn-rakuten:hover { box-shadow: 0 2px 0 #7f0000; }
+  .product-card-btn-amazon:hover { color: #0f1111; }
+  .product-card-btn-rakuten:hover { color: #fff; }
   .product-card-caption {
     color: var(--text-sub);
     font-size: 0.78rem;
-    margin: 10px 0 0;
+    margin: 12px 0 0;
   }
   @media (max-width: 640px) {
     .product-card {
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
+      padding: 18px;
     }
     .product-card-media {
       flex: none;
-      text-align: center;
+      align-self: stretch;
     }
     .product-card-media img {
       margin: 0 auto;

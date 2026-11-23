@@ -157,4 +157,23 @@
       if (first) location.href = first.href;
     });
   }
+
+  /* ---------- スクロール出現（.reveal） ---------- */
+  var revealEls = document.querySelectorAll('.reveal');
+  if (revealEls.length) {
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+    } else {
+      var rio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-visible');
+            rio.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+      revealEls.forEach(function (el) { rio.observe(el); });
+    }
+  }
 })();
