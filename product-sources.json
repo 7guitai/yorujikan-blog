@@ -268,5 +268,140 @@
    "asin": "B0D1CDWZB3",
    "rakuten_item": "https://item.rakuten.co.jp/netbaby/404272/"
   }
+ ],
+ "sheet-mask-best5.mdx": [
+  {
+   "name": "PLuS プリュ プラセンタ モイスチュアマスク 35枚入×2点セット（合計70枚）",
+   "asin": "B0DPFBGLYB",
+   "rakuten_item": "https://item.rakuten.co.jp/luire/pmm-yami/"
+  },
+  {
+   "name": "クオリティファースト オールインワンシートマスク ホワイト 30枚",
+   "asin": "B00SVAL9JM",
+   "rakuten_item": "https://item.rakuten.co.jp/q1st/10000002/"
+  },
+  {
+   "name": "MJCARE（MIJIN）エッセンスマスク 選べる10種 100枚",
+   "asin": null,
+   "rakuten_item": "https://item.rakuten.co.jp/apm24/mjsc40201n-time-100/"
+  },
+  {
+   "name": "DERMAL（ダーマル）エッセンスマスク 選べる10種 100枚",
+   "asin": "B08C7MN9YV",
+   "rakuten_item": "https://item.rakuten.co.jp/a-cueb/dermal-100/"
+  },
+  {
+   "name": "LuLuLun ルルルン OVER45 カメリアピンク（モイスト）7枚入",
+   "asin": null,
+   "rakuten_item": "https://item.rakuten.co.jp/lululun-shop/cp2fb-2111-3/"
+  }
+ ],
+ "kitchen-consumables-best5.mdx": [
+  {
+   "name": "サンサンスポンジ 4個セット 全9色 キッチンスポンジ",
+   "asin": "B07T243JW4",
+   "rakuten_item": "https://item.rakuten.co.jp/dainichi-corp/10000017/"
+  },
+  {
+   "name": "マジック鮮度 真空パック袋 20×30cm 50枚入り",
+   "asin": "B09NNY9WNT",
+   "rakuten_item": "https://item.rakuten.co.jp/tcol/toyo-s-2030/"
+  },
+  {
+   "name": "カークランド ペーパータオル 160シート 12ロール 2枚重ね",
+   "asin": "B0FM4MDT96",
+   "rakuten_item": "https://item.rakuten.co.jp/whiteleaf/costoco_papertowel/"
+  },
+  {
+   "name": "サンキョウプラテック ごみ袋 箱タイプ 45リットル 半透明 65×80cm 0.015mm厚 100枚×2小箱 BX-530-2kobako",
+   "asin": null,
+   "rakuten_item": "https://item.rakuten.co.jp/poly-stadium/bx-530box2kobako/"
+  },
+  {
+   "name": "NEWクレラップ ミニ 22cm×50m（1コ入）",
+   "asin": "B0FYDHC18L",
+   "rakuten_item": "https://item.rakuten.co.jp/rakuten24/a001200200078/"
+  }
+ ],
+ "folding-umbrella-best5.mdx": [
+  {
+   "name": "DeliToo 折りたたみ日傘（形状記憶・自動開閉・完全遮光）",
+   "asin": "B0G4D2DX17",
+   "rakuten_item": "https://item.rakuten.co.jp/azusa/b16gcq/"
+  },
+  {
+   "name": "chakashodina 日傘 形状記憶 折りたたみ傘（自動開閉・3秒でたためる）",
+   "asin": "B0GR14RGVT",
+   "rakuten_item": "https://item.rakuten.co.jp/chakasho-dina/383yimiaorisan/"
+  },
+  {
+   "name": "KONCIWA 日傘 折りたたみ（5秒でたためる・形状記憶・自動開閉）",
+   "asin": null,
+   "rakuten_item": "https://item.rakuten.co.jp/kawapettii/yzd-higasa-1/"
+  },
+  {
+   "name": "solshade 022 日傘 折りたたみ 2段折り（天然木持ち手・完全遮光）",
+   "asin": null,
+   "rakuten_item": "https://item.rakuten.co.jp/rennkou-syouji/solshade022/"
+  },
+  {
+   "name": "折りたたみ傘 大きいサイズ 125cm 自動開閉（16本骨・強風耐性）",
+   "asin": null,
+   "rakuten_item": "https://item.rakuten.co.jp/natuse-shop/nts-umb001/"
+  }
+ ],
+ "sleeping-bag-bike-cover-best5.mdx": [
+  {
+   "name": "自転車カバー ラージ 24〜27インチ対応 防水 厚手 ママチャリ サイクルカバー",
+   "asin": null,
+   "rakuten_item": "https://item.rakuten.co.jp/mercurys/dx-kaba/"
+  },
+  {
+   "name": "Nuuca 寝袋 防災 来客用 布団セット ヌーカスリープ",
+   "asin": null,
+   "rakuten_item": "https://item.rakuten.co.jp/nuuca/10000003/"
+  },
+  {
+   "name": "クレエ 自転車カバー 210D 厚手 防水 破れにくい サイクルカバー 子供乗せ対応",
+   "asin": "B076BVPCJP",
+   "rakuten_item": "https://item.rakuten.co.jp/auc-risecreation/c017/"
+  },
+  {
+   "name": "Bears Rock 封筒型寝袋 -6℃ MX-604 ふわ暖 3.5シーズン 洗える寝袋",
+   "asin": null,
+   "rakuten_item": "https://item.rakuten.co.jp/gorilla55/2011-1012-2/"
+  },
+  {
+   "name": "Zaida 寝袋 封筒型 最大限界温度-15℃ 230T 1.8kg",
+   "asin": null,
+   "rakuten_item": "https://item.rakuten.co.jp/artpiece/sd/"
+  }
+ ],
+ "amazon-black-friday-best5.mdx": [
+  {
+   "name": "スコッティ フラワーパック 3倍長持ち トイレットペーパー ダブル 4ロール×12袋セット（48ロール・1ロール75m）",
+   "asin": "B085GDK3FH",
+   "rakuten_item": "https://item.rakuten.co.jp/rakuten24/20005/"
+  },
+  {
+   "name": "スコッティ ティッシュペーパー 200組 5箱×12パック（60箱）",
+   "asin": "B0GBSV24JY",
+   "rakuten_item": "https://item.rakuten.co.jp/kamiyasan-store/10000001/"
+  },
+  {
+   "name": "エリエール 超吸収キッチンタオル 120カット（4ロール入×12セット）",
+   "asin": null,
+   "rakuten_item": "https://item.rakuten.co.jp/rakuten24/581527/"
+  },
+  {
+   "name": "シルコット 99.99%除菌ウェットティッシュ アルコールタイプ 詰替（40枚×8個入）",
+   "asin": "B0BKYVVLH3",
+   "rakuten_item": "https://item.rakuten.co.jp/rakuten24/a001269197460/"
+  },
+  {
+   "name": "LIFEDRINK 彩茶 緑茶 500ml×24本（ラベルあり／ラベルレス選択可）",
+   "asin": "B0CKGTHH8Z",
+   "rakuten_item": "https://item.rakuten.co.jp/lifedrinkcompany/ayacha-500/"
+  }
  ]
 }
