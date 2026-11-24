@@ -55,11 +55,17 @@ const amazon = amazonUrl ?? (asin ? `https://www.amazon.co.jp/dp/${asin}?tag=${T
     flex: 0 0 36%;
     background: var(--bg-alt);
     min-height: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .pb-media img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    max-height: 260px;
+    object-fit: contain;
     display: block;
     border-radius: 0;
   }
